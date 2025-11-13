@@ -1,4 +1,11 @@
-import { createContext, useContext, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react'
+import {
+  cadenceMap,
+  cadencePresets,
+  jobTrackMap,
+  jobTracks,
+  notificationChannels as notificationChannelPresets,
+} from '../constants/onboarding'
 
 const AppStateContext = createContext(null)
 
@@ -52,32 +59,100 @@ const mockScoreHistory = [
 
 const questionBank = [
   {
-    id: 'q-front-001',
-    role: '프론트엔드',
-    prompt: '웹 성능 최적화를 위해 Core Web Vitals를 개선했던 사례를 구조적으로 설명해 주세요.',
-    subPrompt: '측정 지표, 문제의 원인, 개선 실험, 정량/정성 결과를 순서대로 언급해 주세요.',
-    tags: ['Performance', 'Frontend', 'Problem Solving'],
+    id: 'q-people-001',
+    trackId: 'people',
+    roleId: 'cabin-crew',
+    prompt: '기내에서 예기치 못한 이슈를 해결했던 경험을 STAR 구조로 설명해 주세요.',
+    subPrompt: '상황, 즉각적인 대응, 고객 반응, 배운 점을 순서대로 들려주세요.',
+    tags: ['Customer Care', 'Communication', 'Poise'],
   },
   {
-    id: 'q-front-002',
-    role: '프론트엔드',
-    prompt: '디자인 시스템을 구축하거나 고도화한 경험이 있다면, 어떤 기준으로 의사결정을 했는지 알려주세요.',
-    subPrompt: '토큰 설계, 컴포넌트 구조, 접근성, 협업 방법을 포함해 설명하면 좋아요.',
-    tags: ['Design System', 'Collaboration', 'Accessibility'],
+    id: 'q-people-002',
+    trackId: 'people',
+    roleId: 'csr',
+    prompt: '클레임 고객을 만족시킨 경험이 있다면 상세히 설명해 주세요.',
+    subPrompt: '고객의 초기 감정, 공감 방식, 해결 프로세스, 결과를 포함해주세요.',
+    tags: ['Empathy', 'Conflict Resolution'],
   },
   {
-    id: 'q-pm-001',
-    role: 'PM',
-    prompt: '신규 기능 런칭 전, 고객 여정을 어떻게 설계하고 검증했는지 사례를 공유해주세요.',
-    subPrompt: '문제 정의 → 리서치 → MVP → 출시 이후 학습 순으로 이야기하면 좋아요.',
-    tags: ['Journey Mapping', 'Product Discovery'],
+    id: 'q-leadership-001',
+    trackId: 'leadership',
+    roleId: 'pm',
+    prompt: '프로젝트 리더로서 위기 상황을 조율했던 순간을 회고해 주세요.',
+    subPrompt: '문제 정의, 이해관계자 정렬, 의사결정, 학습을 중심으로 이야기하면 좋아요.',
+    tags: ['Leadership', 'Stakeholder', 'Decision Making'],
   },
   {
-    id: 'q-data-001',
-    role: '데이터',
-    prompt: '데이터 품질 이슈를 해결했던 경험과, 그 과정에서 배운 교훈을 알려주세요.',
-    subPrompt: '탐지 방법, 우선순위 설정, 이해관계자 설득, 자동화 전략까지 포함하면 좋습니다.',
-    tags: ['Data Quality', 'Automation', 'Stakeholder'],
+    id: 'q-leadership-002',
+    trackId: 'leadership',
+    roleId: 'startup-dev',
+    prompt: '스타트업에서 제품을 빠르게 고도화한 경험을 공유해주세요.',
+    subPrompt: '우선순위, 커뮤니케이션, 실행 전략, 성과를 포함해 주세요.',
+    tags: ['Product Strategy', 'Execution'],
+  },
+  {
+    id: 'q-creative-001',
+    trackId: 'creative',
+    roleId: 'marketer',
+    prompt: '가장 임팩트 있었던 캠페인 기획과 성과를 이야기해주세요.',
+    subPrompt: '인사이트, 컨셉, 실행, 성과 지표, 배운 점을 짚어주세요.',
+    tags: ['Storytelling', 'Creativity', 'Metrics'],
+  },
+  {
+    id: 'q-creative-002',
+    trackId: 'creative',
+    roleId: 'designer',
+    prompt: '디자인 시스템을 구축하거나 개편한 경험이 있다면 설명해 주세요.',
+    subPrompt: '문제 정의, 의사결정 기준, 협업 구조, 결과를 담아주세요.',
+    tags: ['Design System', 'Collaboration'],
+  },
+  {
+    id: 'q-technical-001',
+    trackId: 'technical',
+    roleId: 'frontend',
+    prompt: '웹 성능 병목을 발견하고 개선했던 사례를 공유해주세요.',
+    subPrompt: '탐지 도구, 개선 실험, 성과, 커뮤니케이션 방식까지 포함해주세요.',
+    tags: ['Performance', 'Engineering'],
+  },
+  {
+    id: 'q-technical-002',
+    trackId: 'technical',
+    roleId: 'backend',
+    prompt: '대규모 트래픽 증가에 대비해 시스템을 확장했던 경험을 설명해 주세요.',
+    subPrompt: '문제 진단, 설계 선택, 리스크 관리, 결과를 중심으로 말해주세요.',
+    tags: ['Architecture', 'Scalability'],
+  },
+  {
+    id: 'q-technical-003',
+    trackId: 'technical',
+    roleId: 'rnd',
+    prompt: '연구 프로젝트에서 실험 설계를 주도했던 경험을 들려주세요.',
+    subPrompt: '가설 설정, 실험 방법, 결과 해석, 후속 학습을 포함하면 좋아요.',
+    tags: ['Research', 'Analytical Thinking'],
+  },
+  {
+    id: 'q-creative-003',
+    trackId: 'creative',
+    roleId: 'planner',
+    prompt: '서비스 기획 단계에서 비즈니스 임팩트를 만든 사례를 소개해주세요.',
+    subPrompt: '문제 정의, 리서치, 솔루션, 결과를 순차적으로 공유해주세요.',
+    tags: ['Product Sense', 'Insight'],
+  },
+  {
+    id: 'q-people-003',
+    trackId: 'people',
+    roleId: 'civil',
+    prompt: '민원 응대 과정에서 제도를 개선했던 경험이 있다면 설명해주세요.',
+    subPrompt: '민원 유형, 분석, 개선안, 만족도 변화를 포함하면 좋아요.',
+    tags: ['Service Innovation', 'Policy'],
+  },
+  {
+    id: 'q-leadership-003',
+    trackId: 'leadership',
+    roleId: 'hr',
+    prompt: '조직문화를 개선하기 위해 설계한 프로그램이 있다면 공유해주세요.',
+    subPrompt: '문제 인식, 설계, 실행, 성과, 배운 점을 이야기해주세요.',
+    tags: ['Culture', 'HR Strategy'],
   },
 ]
 
@@ -122,15 +197,15 @@ const defaultActivity = Array.from({ length: 18 }, (_, weekIndex) =>
 const defaultPurchases = [
   {
     id: 'reward-004',
-    name: '리치 드립백 커피 세트',
-    cost: 180,
+    name: '편의점 모바일 쿠폰',
+    cost: 300,
     purchasedAt: '2025-11-05T07:00:00.000Z',
     deliveryStatus: '배송 중',
   },
   {
     id: 'reward-002',
-    name: '프로덕트 서적 30% 할인 쿠폰',
-    cost: 240,
+    name: '도서 문화 상품권 1만원',
+    cost: 10000,
     purchasedAt: '2025-10-23T11:15:00.000Z',
     deliveryStatus: '사용 완료',
   },
@@ -141,15 +216,76 @@ const defaultUserProfile = {
   name: '김하린',
   email: 'harin@careerbot.ai',
   desiredField: '프로덕트 매니저',
+  jobTrackId: 'leadership',
+  jobTrackLabel: jobTrackMap.leadership.label,
+  jobRoleId: 'pm',
+  jobRoleLabel: '프로젝트 매니저',
+  customJobLabel: '',
   goal: '내년 상반기 글로벌 스타트업 PM 포지션 합격',
   focusArea: '프로덕트 전략',
   questionCadence: 'daily',
-  questionCadenceLabel: '매일 (주 5회)',
+  questionCadenceLabel: cadenceMap.daily.label,
+  questionSchedule: cadenceMap.daily.schedule,
+  notificationChannels: notificationChannelPresets.filter((channel) => channel.isDefault).map((channel) => channel.id),
   avatar: '🌌',
   points: 620,
   streak: 9,
   tier: 'Growth Explorer',
   lastLoginAt: '2025-11-12T21:00:00.000Z',
+}
+
+const defaultChannels = notificationChannelPresets.filter((channel) => channel.isDefault).map((channel) => channel.id)
+
+function getTrackLabel(trackId) {
+  return jobTrackMap[trackId]?.label ?? trackId
+}
+
+function getRoleLabel(trackId, roleId) {
+  const track = jobTrackMap[trackId]
+  const role = track?.roles?.find((item) => item.id === roleId)
+  return role?.label ?? roleId
+}
+
+function pickQuestionForProfile(profile, sequence = 0) {
+  if (!profile) return null
+  const trackId = profile.jobTrackId || profile.trackId
+  const roleId = profile.jobRoleId || profile.roleId
+
+  const pool = questionBank.filter((item) => {
+    if (roleId && item.roleId === roleId) return true
+    if (trackId && item.trackId === trackId) return true
+    return false
+  })
+
+  const candidates = pool.length > 0 ? pool : questionBank
+  const index = sequence % candidates.length
+  return candidates[index]
+}
+
+function buildQuestionPacket({ question, profile, channels, cadenceId }) {
+  const uniqueChannels = Array.from(new Set([...defaultChannels, ...(channels || [])]))
+  const cadence = cadenceMap[cadenceId] ?? null
+  const trackLabel = getTrackLabel(question.trackId) || profile?.jobTrackLabel || profile?.desiredField || ''
+  const roleLabel =
+    getRoleLabel(question.trackId, question.roleId) || profile?.jobRoleLabel || profile?.desiredField || ''
+  return {
+    id: `dispatch-${Date.now()}`,
+    questionId: question.id,
+    prompt: question.prompt,
+    subPrompt: question.subPrompt,
+    tags: question.tags,
+    jobTrackId: question.trackId,
+    jobTrackLabel: trackLabel,
+    roleId: question.roleId,
+    roleLabel,
+    cadenceId: cadenceId,
+    cadenceLabel: cadence?.label ?? '',
+    schedule: cadence?.schedule ?? '',
+    channels: uniqueChannels,
+    deliveredAt: new Date().toISOString(),
+    userId: profile?.id,
+    userEmail: profile?.email,
+  }
 }
 
 function appendToHeatmap(activity) {
@@ -163,113 +299,214 @@ function appendToHeatmap(activity) {
 
 export function AppProvider({ children }) {
   const [user, setUser] = useState(null)
-  const [questionIndex, setQuestionIndex] = useState(0)
   const [scoreHistory, setScoreHistory] = useState(mockScoreHistory)
   const [activity, setActivity] = useState(defaultActivity)
   const [purchases, setPurchases] = useState(defaultPurchases)
+  const [sentQuestions, setSentQuestions] = useState([])
+  const [activeQuestion, setActiveQuestion] = useState(null)
+  const [lastDispatch, setLastDispatch] = useState(null)
+  const sequenceRef = useRef(0)
+
+  const questionDispatchCount = sentQuestions.length
 
   const currentQuestion = useMemo(() => {
+    if (activeQuestion) return activeQuestion
     if (!user) return null
-    const preferred = questionBank.filter((item) => item.role === user.desiredField || item.role === user.focusArea)
-    if (preferred.length > 0) {
-      return preferred[questionIndex % preferred.length]
-    }
-    return questionBank[questionIndex % questionBank.length]
-  }, [questionIndex, user])
+    return pickQuestionForProfile(user, questionDispatchCount)
+  }, [activeQuestion, questionDispatchCount, user])
 
   const lastFeedback = scoreHistory.length > 0 ? scoreHistory[0] : null
 
-  const login = ({ email }) => {
-    const fallback = { ...defaultUserProfile, email: email || defaultUserProfile.email }
-    setUser(fallback)
-    return fallback
-  }
+  const dispatchQuestion = useCallback(
+    ({ profile, channels, cadenceId, sequence } = {}) => {
+      const baseProfile = profile ?? user
+      if (!baseProfile) return null
+      const baseCadence = cadenceId ?? baseProfile.questionCadence ?? cadencePresets[0].id
+      const seq = sequence ?? sequenceRef.current
+      const question = pickQuestionForProfile(baseProfile, seq)
+      if (!question) return null
 
-  const signup = (payload) => {
-    const newProfile = {
-      id: `user-${Date.now()}`,
-      name: payload.name || '커리어봇 사용자',
-      email: payload.email,
-      desiredField: payload.desiredField,
-      goal: payload.goal,
-      focusArea: payload.focusArea,
-      questionCadence: payload.questionCadence,
-      questionCadenceLabel: payload.questionCadenceLabel,
-      avatar: payload.avatar || '🚀',
-      points: 520,
-      streak: 1,
-      tier: 'Trailblazer',
-      lastLoginAt: new Date().toISOString(),
-    }
-    setUser(newProfile)
-    return newProfile
-  }
+      const packet = buildQuestionPacket({
+        question,
+        profile: baseProfile,
+        channels: channels ?? baseProfile.notificationChannels,
+        cadenceId: baseCadence,
+      })
 
-  const logout = () => {
+      sequenceRef.current = seq + 1
+      setActiveQuestion(question)
+      setSentQuestions((prev) => [packet, ...prev])
+      setLastDispatch(packet)
+      return packet
+    },
+    [user],
+  )
+
+  const login = useCallback(
+    ({ email }) => {
+      const fallback = { ...defaultUserProfile, email: email || defaultUserProfile.email }
+      setUser(fallback)
+      setActiveQuestion(null)
+      setSentQuestions([])
+      setLastDispatch(null)
+      sequenceRef.current = 0
+      dispatchQuestion({
+        profile: fallback,
+        channels: fallback.notificationChannels,
+        cadenceId: fallback.questionCadence,
+        sequence: 0,
+      })
+      return fallback
+    },
+    [dispatchQuestion],
+  )
+
+  const signup = useCallback(
+    (payload) => {
+      const cadence = cadenceMap[payload.questionCadence] ?? cadencePresets[0]
+      const trackLabel = getTrackLabel(payload.jobTrackId)
+      const roleLabel =
+        payload.jobRoleLabel || getRoleLabel(payload.jobTrackId, payload.jobRoleId) || trackLabel
+      const mergedChannels =
+        payload.notificationChannels && payload.notificationChannels.length > 0
+          ? Array.from(new Set([...defaultChannels, ...payload.notificationChannels]))
+          : defaultChannels
+
+      const newProfile = {
+        id: `user-${Date.now()}`,
+        name: payload.name || 'PrePair 사용자',
+        email: payload.email,
+        desiredField: roleLabel,
+        jobTrackId: payload.jobTrackId,
+        jobTrackLabel: trackLabel,
+        jobRoleId: payload.jobRoleId,
+        jobRoleLabel: roleLabel,
+        customJobLabel: payload.customJobLabel ?? '',
+        goal: payload.goal,
+        focusArea: payload.focusArea || '',
+        questionCadence: cadence.id,
+        questionCadenceLabel: cadence.label,
+        questionSchedule: cadence.schedule,
+        notificationChannels: mergedChannels,
+        avatar: payload.avatar || '🚀',
+        points: 520,
+        streak: 1,
+        tier: 'Trailblazer',
+        lastLoginAt: new Date().toISOString(),
+      }
+
+      setUser(newProfile)
+      setActiveQuestion(null)
+      setSentQuestions([])
+      setLastDispatch(null)
+      sequenceRef.current = 0
+      dispatchQuestion({
+        profile: newProfile,
+        channels: mergedChannels,
+        cadenceId: cadence.id,
+        sequence: 0,
+      })
+      return newProfile
+    },
+    [dispatchQuestion],
+  )
+
+  const logout = useCallback(() => {
     setUser(null)
-  }
+    setActiveQuestion(null)
+    setSentQuestions([])
+    setLastDispatch(null)
+    sequenceRef.current = 0
+  }, [])
 
-  const updateSettings = (nextSettings) => {
+  const updateSettings = useCallback((nextSettings) => {
     setUser((prev) => {
       if (!prev) return prev
+      const cadence = nextSettings.questionCadence
+        ? cadenceMap[nextSettings.questionCadence] ?? null
+        : null
       return {
         ...prev,
         ...nextSettings,
+        ...(cadence
+          ? {
+              questionCadence: cadence.id,
+              questionCadenceLabel: cadence.label,
+              questionSchedule: cadence.schedule,
+            }
+          : {}),
       }
     })
-  }
+  }, [])
 
-  const recordInterviewResult = ({ score, summary, highlights, breakdown, focusTags, question }) => {
-    setScoreHistory((prev) => [
-      {
-        id: `session-${Date.now()}`,
-        question,
-        score,
-        submittedAt: new Date().toISOString(),
-        summary,
-        highlights,
-        focusTags,
-        breakdown,
-      },
-      ...prev,
-    ])
-
-    setUser((prev) => {
-      if (!prev) return prev
-      const bonus = Math.max(40, Math.round(score * 0.6))
-      return {
+  const recordInterviewResult = useCallback(
+    ({ score, summary, highlights, breakdown, focusTags, question }) => {
+      setScoreHistory((prev) => [
+        {
+          id: `session-${Date.now()}`,
+          question,
+          score,
+          submittedAt: new Date().toISOString(),
+          summary,
+          highlights,
+          focusTags,
+          breakdown,
+        },
         ...prev,
-        points: prev.points + bonus,
-        streak: prev.streak + 1,
+      ])
+
+      setSentQuestions((prev) => {
+        if (prev.length === 0) return prev
+        const [latest, ...rest] = prev
+        const updated = {
+          ...latest,
+          answeredAt: new Date().toISOString(),
+          score,
+        }
+        return [updated, ...rest]
+      })
+
+      setUser((prev) => {
+        if (!prev) return prev
+        const bonus = Math.max(40, Math.round(score * 0.6))
+        return {
+          ...prev,
+          points: prev.points + bonus,
+          streak: prev.streak + 1,
+        }
+      })
+
+      setActivity((prev) => appendToHeatmap(prev))
+      dispatchQuestion()
+    },
+    [dispatchQuestion],
+  )
+
+  const redeemReward = useCallback(
+    ({ id, name, cost }) => {
+      if (!user || user.points < cost) {
+        return { success: false, reason: '포인트가 부족합니다.' }
       }
-    })
 
-    setActivity((prev) => appendToHeatmap(prev))
-    setQuestionIndex((prev) => prev + 1)
-  }
+      setUser((prev) => {
+        if (!prev) return prev
+        return { ...prev, points: prev.points - cost }
+      })
 
-  const redeemReward = ({ id, name, cost }) => {
-    if (!user || user.points < cost) {
-      return { success: false, reason: '포인트가 부족합니다.' }
-    }
+      const record = {
+        id: `${id}-${Date.now()}`,
+        name,
+        cost,
+        purchasedAt: new Date().toISOString(),
+        deliveryStatus: '처리 중',
+      }
 
-    setUser((prev) => {
-      if (!prev) return prev
-      return { ...prev, points: prev.points - cost }
-    })
+      setPurchases((prev) => [record, ...prev])
 
-    const record = {
-      id: `${id}-${Date.now()}`,
-      name,
-      cost,
-      purchasedAt: new Date().toISOString(),
-      deliveryStatus: '처리 중',
-    }
-
-    setPurchases((prev) => [record, ...prev])
-
-    return { success: true, record }
-  }
+      return { success: true, record }
+    },
+    [user],
+  )
 
   const value = {
     user,
@@ -285,6 +522,12 @@ export function AppProvider({ children }) {
     activity,
     purchases,
     redeemReward,
+    sentQuestions,
+    lastDispatch,
+    dispatchQuestion,
+    jobTracks,
+    cadencePresets,
+    notificationChannelPresets,
   }
 
   return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>

@@ -1,235 +1,466 @@
 import { motion } from 'framer-motion'
 import { useEffect, useMemo, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAppState } from '../context/AppStateContext'
 import '../styles/pages/Auth.css'
 
-const desiredFields = ['프론트엔드', '백엔드', 'PM', '데이터', '디자인', '마케팅']
-
-const questionCadenceOptions = [
-  { id: 'daily', label: '매일 (주 5회)', detail: '짧은 루틴으로 매일 한 문제씩' },
-  { id: 'semi', label: '격일 (주 3회)', detail: '복습 시간을 포함한 균형 루틴' },
-  { id: 'weekly', label: '주 1회 집중', detail: '긴 답변과 딥다이브에 최적화' },
-]
-
-const focusAreas = ['프로덕트 전략', '시스템 설계', 'AI 서비스', '사용자 경험', '데이터 분석']
-
 const cardVariants = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 28 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
 }
 
+const steps = [
+  { id: 'account', label: '기본 정보' },
+  { id: 'job', label: '직업/관심 선택' },
+  { id: 'cadence', label: '질문 주기 & 알림' },
+]
+
+const passwordRule = /[^A-Za-z0-9]/
+
 export default function AuthPage() {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const [searchParams] = useSearchParams()
+  const { user, login, signup, jobTracks, cadencePresets, notificationChannelPresets } = useAppState()
+  const redirectFrom = location.state?.from
+  const redirectState = redirectFrom ? { from: redirectFrom } : undefined
+
+  const defaultTrack = jobTracks[0]
+  const defaultRole = defaultTrack?.roles?.[0]
+  const defaultCadence = cadencePresets[0]
+
   const [mode, setMode] = useState('signup')
+  const [activeStep, setActiveStep] = useState(0)
   const [loginForm, setLoginForm] = useState({ email: '', password: '' })
   const [signupForm, setSignupForm] = useState({
     name: '',
     email: '',
     password: '',
-    desiredField: desiredFields[0],
-    focusArea: focusAreas[0],
+    jobTrackId: defaultTrack?.id ?? '',
+    jobRoleId: defaultRole?.id ?? '',
+    customJobLabel: '',
     goal: '',
-    questionCadence: 'daily',
+    focusArea: '',
+    questionCadence: defaultCadence?.id ?? 'daily',
+    notificationChannels: [],
   })
 
-  const navigate = useNavigate()
-  const location = useLocation()
-  const { user, login, signup } = useAppState()
+  useEffect(() => {
+    const paramMode = searchParams.get('mode')
+    if (paramMode === 'login' || paramMode === 'signup') {
+      setMode(paramMode)
+      setActiveStep(0)
+    }
+  }, [searchParams])
 
   useEffect(() => {
     if (user) {
-      navigate('/coach', { replace: true })
+      navigate('/rewards', { replace: true, state: redirectState })
     }
-  }, [navigate, user])
+  }, [navigate, redirectState, user])
 
-  const loginDisabled = useMemo(() => {
-    return !/\S+@\S+\.\S+/.test(loginForm.email) || loginForm.password.trim().length < 6
-  }, [loginForm])
+  useEffect(() => {
+    if (!signupForm.jobTrackId && defaultTrack) {
+      setSignupForm((prev) => ({
+        ...prev,
+        jobTrackId: defaultTrack.id,
+        jobRoleId: defaultTrack.roles?.[0]?.id ?? '',
+      }))
+    }
+  }, [defaultTrack, signupForm.jobTrackId])
 
-  const signupDisabled = useMemo(() => {
-    return (
-      !/\S+@\S+\.\S+/.test(signupForm.email) ||
-      signupForm.password.trim().length < 6 ||
-      signupForm.goal.trim().length < 10 ||
-      signupForm.name.trim().length < 2
-    )
-  }, [signupForm])
+  const selectedTrack = useMemo(
+    () => jobTracks.find((track) => track.id === signupForm.jobTrackId) ?? jobTracks[0],
+    [jobTracks, signupForm.jobTrackId],
+  )
+
+  const selectedRole = useMemo(() => {
+    if (!selectedTrack) return null
+    return selectedTrack.roles?.find((role) => role.id === signupForm.jobRoleId) ?? null
+  }, [selectedTrack, signupForm.jobRoleId])
+
+  const signupEmailValid = /\S+@\S+\.\S+/.test(signupForm.email)
+  const signupPasswordValid =
+    signupForm.password.trim().length >= 6 && passwordRule.test(signupForm.password)
+  const signupNameValid = signupForm.name.trim().length >= 2
+  const signupGoalValid = signupForm.goal.trim().length >= 10
+  const jobSelectionValid =
+    signupForm.jobTrackId &&
+    ((signupForm.jobRoleId && signupForm.jobRoleId !== 'custom') ||
+      signupForm.customJobLabel.trim().length > 1)
+
+  const stepValidity = [
+    signupEmailValid && signupPasswordValid && signupNameValid,
+    jobSelectionValid && signupGoalValid,
+    Boolean(signupForm.questionCadence),
+  ]
+
+  const isLoginEmailValid = /\S+@\S+\.\S+/.test(loginForm.email)
+  const isLoginPasswordValid = loginForm.password.trim().length >= 6
+  const loginDisabled = !(isLoginEmailValid && isLoginPasswordValid)
+
+  const handleModeChange = (nextMode) => {
+    setMode(nextMode)
+    setActiveStep(0)
+  }
+
+  const handleNextStep = () => {
+    if (!stepValidity[activeStep]) return
+    setActiveStep((prev) => Math.min(prev + 1, steps.length - 1))
+  }
+
+  const handlePrevStep = () => {
+    setActiveStep((prev) => Math.max(prev - 1, 0))
+  }
 
   const handleLogin = (event) => {
     event.preventDefault()
     if (loginDisabled) return
     login({ email: loginForm.email })
-    const redirect = location.state?.from || '/coach'
-    navigate(redirect, { replace: true })
+    navigate('/rewards', { replace: true, state: redirectState })
   }
 
   const handleSignup = (event) => {
     event.preventDefault()
-    if (signupDisabled) return
-    const cadenceLabel = questionCadenceOptions.find((item) => item.id === signupForm.questionCadence)?.label
+    if (!stepValidity.every(Boolean)) return
+
+    const cadenceMeta =
+      cadencePresets.find((item) => item.id === signupForm.questionCadence) ?? cadencePresets[0]
+
+    const jobRoleLabel =
+      signupForm.customJobLabel.trim() ||
+      selectedRole?.label ||
+      selectedTrack?.label ||
+      signupForm.jobRoleId
+
     signup({
-      ...signupForm,
-      questionCadenceLabel: cadenceLabel,
+      name: signupForm.name,
+      email: signupForm.email,
+      password: signupForm.password,
+      jobTrackId: selectedTrack?.id,
+      jobTrackLabel: selectedTrack?.label,
+      jobRoleId: signupForm.customJobLabel.trim() ? 'custom' : selectedRole?.id,
+      jobRoleLabel,
+      customJobLabel: signupForm.customJobLabel.trim(),
+      goal: signupForm.goal,
+      focusArea: signupForm.focusArea,
+      questionCadence: cadenceMeta.id,
+      questionCadenceLabel: cadenceMeta.label,
+      notificationChannels: signupForm.notificationChannels,
     })
-    navigate('/coach', { replace: true })
+
+    navigate('/rewards', { replace: true, state: redirectState })
   }
 
-  const activeForm = mode === 'signup'
+  const toggleChannel = (channelId) => {
+    setSignupForm((prev) => {
+      if (prev.notificationChannels.includes(channelId)) {
+        return {
+          ...prev,
+          notificationChannels: prev.notificationChannels.filter((id) => id !== channelId),
+        }
+      }
+      return { ...prev, notificationChannels: [...prev.notificationChannels, channelId] }
+    })
+  }
+
+  const activeModeIsSignup = mode === 'signup'
 
   return (
     <div className="auth">
       <motion.section className="auth__intro" variants={cardVariants} initial="hidden" animate="visible">
-        <span className="tag">Personalized Onboarding</span>
+        <span className="tag">Onboard with PrePair</span>
         <h1>
-          당신의 목표와 루틴을
+          목표, 직업, 루틴을 알려주면
           <br />
-          알려주세요.
+          AI가 첫 질문을 바로 보내드려요.
         </h1>
         <p>
-          인터뷰 Orbit이 AI 코칭 강도를 맞추고, 잔디처럼 루틴을 기록하며, 포인트를 정산해 드릴게요. 모의 면접보다
-          가볍게, 실전보다 실전답게.
+          회원가입이 완료되는 즉시, 선택한 직업군에 맞는 면접 질문이 메일로 발송됩니다. 루틴과 피드백, 리워드까지 한 번에
+          연결되는 경험을 시작하세요.
         </p>
         <dl className="auth__summary">
           <div>
             <dt>맞춤 질문</dt>
-            <dd>직무·목표 기반 큐레이션</dd>
+            <dd>직업군 · 세부 직무 기반 큐레이션</dd>
           </div>
           <div>
-            <dt>피드백 룰</dt>
-            <dd>구조/명료/깊이/스토리</dd>
+            <dt>알림</dt>
+            <dd>메일 기본, 카카오톡 선택</dd>
           </div>
           <div>
-            <dt>리워드 샵</dt>
-            <dd>커피 · 도서 · 크레딧 교환</dd>
+            <dt>리워드</dt>
+            <dd>점수로 쿠폰 교환 & 잔디 기록</dd>
           </div>
         </dl>
       </motion.section>
 
-      <motion.section className="auth__form-card" variants={cardVariants} initial="hidden" animate="visible" transition={{ delay: 0.12 }}>
+      <motion.section
+        className="auth__form-card"
+        variants={cardVariants}
+        initial="hidden"
+        animate="visible"
+        transition={{ delay: 0.12 }}
+      >
         <div className="auth__tabs" role="tablist">
           <button
             type="button"
             role="tab"
-            aria-selected={activeForm}
-            className={`auth__tab ${activeForm ? 'is-active' : ''}`}
-            onClick={() => setMode('signup')}
+            aria-selected={activeModeIsSignup}
+            className={`auth__tab ${activeModeIsSignup ? 'is-active' : ''}`}
+            onClick={() => handleModeChange('signup')}
           >
             회원가입
           </button>
           <button
             type="button"
             role="tab"
-            aria-selected={!activeForm}
-            className={`auth__tab ${!activeForm ? 'is-active' : ''}`}
-            onClick={() => setMode('login')}
+            aria-selected={!activeModeIsSignup}
+            className={`auth__tab ${!activeModeIsSignup ? 'is-active' : ''}`}
+            onClick={() => handleModeChange('login')}
           >
             로그인
           </button>
         </div>
 
-        {activeForm ? (
-          <form className="form" onSubmit={handleSignup}>
-            <label className="form__field">
-              <span>이름</span>
-              <input
-                type="text"
-                placeholder="홍길동"
-                value={signupForm.name}
-                onChange={(event) => setSignupForm((prev) => ({ ...prev, name: event.target.value }))}
-                required
-              />
-            </label>
-
-            <label className="form__field">
-              <span>이메일</span>
-              <input
-                type="email"
-                placeholder="you@example.com"
-                value={signupForm.email}
-                onChange={(event) => setSignupForm((prev) => ({ ...prev, email: event.target.value }))}
-                required
-              />
-            </label>
-
-            <label className="form__field">
-              <span>비밀번호</span>
-              <input
-                type="password"
-                placeholder="6자 이상 입력"
-                value={signupForm.password}
-                onChange={(event) => setSignupForm((prev) => ({ ...prev, password: event.target.value }))}
-                required
-              />
-            </label>
-
-            <div className="form__field form__field--split">
-              <label>
-                <span>희망 분야</span>
-                <select
-                  value={signupForm.desiredField}
-                  onChange={(event) => setSignupForm((prev) => ({ ...prev, desiredField: event.target.value }))}
-                >
-                  {desiredFields.map((field) => (
-                    <option key={field} value={field}>
-                      {field}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                <span>집중 영역</span>
-                <select
-                  value={signupForm.focusArea}
-                  onChange={(event) => setSignupForm((prev) => ({ ...prev, focusArea: event.target.value }))}
-                >
-                  {focusAreas.map((field) => (
-                    <option key={field} value={field}>
-                      {field}
-                    </option>
-                  ))}
-                </select>
-              </label>
+        {activeModeIsSignup ? (
+          <>
+            <div className="auth__stepper" aria-label="회원가입 단계">
+              {steps.map((step, index) => {
+                const isActive = index === activeStep
+                const isCompleted = index < activeStep
+                return (
+                  <div key={step.id} className={`auth__step ${isActive ? 'is-active' : ''} ${isCompleted ? 'is-done' : ''}`}>
+                    <span>{index + 1}</span>
+                    <strong>{step.label}</strong>
+                  </div>
+                )
+              })}
             </div>
 
-            <label className="form__field">
-              <span>면접 목표</span>
-              <textarea
-                placeholder="내년 상반기 시리즈B 스타트업 프론트엔드 포지션 합격"
-                value={signupForm.goal}
-                onChange={(event) => setSignupForm((prev) => ({ ...prev, goal: event.target.value }))}
-              />
-            </label>
+            <form className="auth__signup-form" onSubmit={handleSignup}>
+              {activeStep === 0 && (
+                <div className="auth__step-panel">
+                  <label className="form__field">
+                    <span>이름</span>
+                    <input
+                      type="text"
+                      placeholder="홍길동"
+                      value={signupForm.name}
+                      onChange={(event) => setSignupForm((prev) => ({ ...prev, name: event.target.value }))}
+                      required
+                    />
+                  </label>
 
-            <fieldset className="form__fieldset">
-              <legend>질문 빈도</legend>
-              <div className="form__radio-grid">
-                {questionCadenceOptions.map((option) => {
-                  const checked = signupForm.questionCadence === option.id
-                  return (
-                    <label key={option.id} className={`radio-tile ${checked ? 'is-checked' : ''}`}>
+                  <label className="form__field">
+                    <span>이메일</span>
+                    <input
+                      type="email"
+                      placeholder="you@example.com"
+                      value={signupForm.email}
+                      onChange={(event) => setSignupForm((prev) => ({ ...prev, email: event.target.value }))}
+                      required
+                    />
+                  </label>
+
+                  <label className="form__field">
+                    <span>비밀번호</span>
+                    <input
+                      type="password"
+                      placeholder="최소 6자 · 특수문자 1개 포함"
+                      value={signupForm.password}
+                      onChange={(event) => setSignupForm((prev) => ({ ...prev, password: event.target.value }))}
+                      required
+                    />
+                    <small className={`auth__hint ${signupPasswordValid ? 'is-valid' : ''}`}>
+                      {!signupPasswordValid
+                        ? '특수문자 1개 이상을 포함한 6자 이상의 비밀번호를 설정해주세요.'
+                        : '안전한 비밀번호를 사용 중입니다.'}
+                    </small>
+                  </label>
+                </div>
+              )}
+
+              {activeStep === 1 && (
+                <div className="auth__step-panel">
+                  <div className="auth__tracks">
+                    {jobTracks.map((track) => {
+                      const isSelected = track.id === selectedTrack?.id
+                      return (
+                        <button
+                          key={track.id}
+                          type="button"
+                          className={`auth__track ${isSelected ? 'is-selected' : ''}`}
+                          onClick={() =>
+                            setSignupForm((prev) => ({
+                              ...prev,
+                              jobTrackId: track.id,
+                              jobRoleId: track.roles?.[0]?.id ?? '',
+                              customJobLabel: '',
+                            }))
+                          }
+                        >
+                          <strong>{track.label}</strong>
+                          <span>{track.description}</span>
+                        </button>
+                      )
+                    })}
+                  </div>
+
+                  <div className="auth__roles">
+                    <span>세부 직무 선택</span>
+                    <div className="auth__role-grid">
+                      {selectedTrack?.roles?.map((role) => {
+                        const isActive = role.id === signupForm.jobRoleId && !signupForm.customJobLabel
+                        return (
+                          <button
+                            key={role.id}
+                            type="button"
+                            className={`auth__role ${isActive ? 'is-active' : ''}`}
+                            onClick={() =>
+                              setSignupForm((prev) => ({ ...prev, jobRoleId: role.id, customJobLabel: '' }))
+                            }
+                          >
+                            <strong>{role.label}</strong>
+                            <small>{role.reason}</small>
+                          </button>
+                        )
+                      })}
+                    </div>
+                    <label className="form__field auth__custom-role">
+                      <span>기타 (직접 입력)</span>
                       <input
-                        type="radio"
-                        name="question-cadence"
-                        value={option.id}
-                        checked={checked}
-                        onChange={() => setSignupForm((prev) => ({ ...prev, questionCadence: option.id }))}
+                        type="text"
+                        placeholder="예) 글로벌 이커머스 고객 성공 매니저"
+                        value={signupForm.customJobLabel}
+                        onChange={(event) =>
+                          setSignupForm((prev) => ({
+                            ...prev,
+                            customJobLabel: event.target.value,
+                            jobRoleId: 'custom',
+                          }))
+                        }
                       />
-                      <div>
-                        <strong>{option.label}</strong>
-                        <span>{option.detail}</span>
-                      </div>
                     </label>
-                  )
-                })}
-              </div>
-            </fieldset>
+                  </div>
 
-            <button type="submit" className="cta-button cta-button--primary" disabled={signupDisabled}>
-              회원가입 완료
-            </button>
-          </form>
+                  <label className="form__field">
+                    <span>면접 목표</span>
+                    <textarea
+                      placeholder="예) 6개월 내 항공사 객실승무원 최종 합격"
+                      value={signupForm.goal}
+                      onChange={(event) => setSignupForm((prev) => ({ ...prev, goal: event.target.value }))}
+                      required
+                    />
+                  </label>
+
+                  <label className="form__field">
+                    <span>집중하고 싶은 영역 (선택)</span>
+                    <input
+                      type="text"
+                      placeholder="예) 고객 응대 톤 & 태도 개선"
+                      value={signupForm.focusArea}
+                      onChange={(event) => setSignupForm((prev) => ({ ...prev, focusArea: event.target.value }))}
+                    />
+                  </label>
+                </div>
+              )}
+
+              {activeStep === 2 && (
+                <div className="auth__step-panel">
+                  <fieldset className="form__fieldset">
+                    <legend>질문 받을 주기를 선택하세요</legend>
+                    <div className="auth__cadence-grid">
+                      {cadencePresets.map((option) => {
+                        const checked = signupForm.questionCadence === option.id
+                        return (
+                          <label key={option.id} className={`auth__cadence ${checked ? 'is-checked' : ''}`}>
+                            <input
+                              type="radio"
+                              name="signup-cadence"
+                              value={option.id}
+                              checked={checked}
+                              onChange={() => setSignupForm((prev) => ({ ...prev, questionCadence: option.id }))}
+                            />
+                            <div>
+                              <strong>{option.label}</strong>
+                              <span>{option.schedule}</span>
+                              <small>{option.detail}</small>
+                            </div>
+                          </label>
+                        )
+                      })}
+                    </div>
+                    <p className="auth__notice">
+                      질문 발송 시간은 고정되어 있습니다. 메일은 항상 보내드리고, 카카오톡 알림은 선택 사항이에요.
+                    </p>
+                  </fieldset>
+
+                  <fieldset className="form__fieldset">
+                    <legend>알림 채널</legend>
+                    <div className="auth__channel-list">
+                      {notificationChannelPresets.map((channel) => {
+                        const isEmail = channel.id === 'email'
+                        const isChecked = isEmail || signupForm.notificationChannels.includes(channel.id)
+                        return (
+                          <label key={channel.id} className={`auth__channel ${isEmail ? 'is-default' : ''}`}>
+                            <input
+                              type="checkbox"
+                              name="notification-channel"
+                              value={channel.id}
+                              checked={isChecked}
+                              disabled={isEmail}
+                              onChange={() => toggleChannel(channel.id)}
+                            />
+                            <div>
+                              <strong>
+                                {channel.label}
+                                {isEmail && <span className="auth__chip">기본</span>}
+                              </strong>
+                              <span>{channel.description}</span>
+                            </div>
+                          </label>
+                        )
+                      })}
+                    </div>
+                  </fieldset>
+
+                  <div className="auth__summary-card">
+                    <strong>가입 완료 시 즉시 발송됩니다.</strong>
+                    <p>
+                      선택한 직업군에 맞춘 면접 질문이 메일로 도착하고, <em>“답변하러 가기”</em> 버튼을 통해 PrePair 웹으로
+                      돌아와 답변을 작성할 수 있습니다.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              <div className="auth__actions">
+                {activeStep > 0 && (
+                  <button type="button" className="cta-button cta-button--ghost" onClick={handlePrevStep}>
+                    이전 단계
+                  </button>
+                )}
+                {activeStep < steps.length - 1 && (
+                  <button
+                    type="button"
+                    className="cta-button cta-button--primary"
+                    onClick={handleNextStep}
+                    disabled={!stepValidity[activeStep]}
+                  >
+                    다음으로
+                  </button>
+                )}
+                {activeStep === steps.length - 1 && (
+                  <button type="submit" className="cta-button cta-button--primary" disabled={!stepValidity.every(Boolean)}>
+                    가입하고 첫 질문 받기
+                  </button>
+                )}
+              </div>
+            </form>
+          </>
         ) : (
-          <form className="form" onSubmit={handleLogin}>
+          <form className="auth__login-form" onSubmit={handleLogin}>
             <label className="form__field">
               <span>이메일</span>
               <input
@@ -250,10 +481,13 @@ export default function AuthPage() {
                 onChange={(event) => setLoginForm((prev) => ({ ...prev, password: event.target.value }))}
                 required
               />
+              <a className="auth__link" href="mailto:hello@prepair.ai">
+                비밀번호를 잊으셨나요?
+              </a>
             </label>
 
             <button type="submit" className="cta-button cta-button--primary" disabled={loginDisabled}>
-              로그인
+              로그인 후 마이 페이지로 이동
             </button>
           </form>
         )}

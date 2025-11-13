@@ -1,0 +1,128 @@
+.answer {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 0 4.5rem;
+}
+
+.answer__card {
+  width: min(840px, 100%);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(64, 81, 115, 0.18);
+  box-shadow: 0 28px 48px rgba(64, 81, 115, 0.18);
+  padding: 2.4rem;
+  display: grid;
+  gap: 2rem;
+}
+
+.answer__header h1 {
+  margin: 0.8rem 0 0.6rem;
+  font-size: clamp(2rem, 3vw, 2.4rem);
+}
+
+.answer__header p {
+  margin: 0;
+  color: rgba(20, 31, 64, 0.7);
+  max-width: 28rem;
+}
+
+.answer__question {
+  display: grid;
+  gap: 1.2rem;
+  padding: 1.6rem 1.8rem;
+  border-radius: var(--radius-md);
+  background: rgba(174, 197, 242, 0.2);
+  border: 1px solid rgba(64, 81, 115, 0.2);
+}
+
+.answer__meta {
+  display: inline-flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(20, 31, 64, 0.6);
+}
+
+.answer__question h2 {
+  margin: 0;
+  font-size: clamp(1.4rem, 2.4vw, 1.7rem);
+  color: var(--accent-primary);
+}
+
+.answer__question p {
+  margin: 0;
+  color: rgba(20, 31, 64, 0.72);
+}
+
+.answer__tags {
+  display: inline-flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.answer__tags span {
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(64, 81, 115, 0.22);
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 0.82rem;
+}
+
+.answer__footer {
+  display: grid;
+  gap: 1rem;
+}
+
+.answer__cta {
+  display: flex;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.answer__hint {
+  margin: 0;
+  color: rgba(20, 31, 64, 0.62);
+  font-size: 0.88rem;
+}
+
+.answer--empty {
+  padding: 4rem 0;
+}
+
+.answer__empty-card {
+  width: min(520px, 100%);
+  margin: 0 auto;
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(64, 81, 115, 0.18);
+  box-shadow: 0 20px 36px rgba(64, 81, 115, 0.16);
+  display: grid;
+  gap: 1.1rem;
+  text-align: center;
+}
+
+.answer__empty-card p {
+  margin: 0;
+  color: rgba(20, 31, 64, 0.68);
+}
+
+.answer__empty-card .answer__cta {
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .answer__card {
+    padding: 1.8rem;
+  }
+
+  .answer__question {
+    padding: 1.4rem;
+  }
+
+  .answer__cta {
+    justify-content: center;
+  }
+}

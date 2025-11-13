@@ -18,7 +18,7 @@
 .form__field select {
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.98);
+  background: rgba(255, 255, 255, 0.97);
   padding: 0.85rem 1rem;
   color: var(--text-primary);
   font: inherit;
@@ -81,9 +81,9 @@
 }
 
 .radio-tile.is-checked {
-  border-color: rgba(31, 182, 166, 0.6);
+  border-color: rgba(64, 81, 115, 0.55);
   transform: translateY(-2px);
-  box-shadow: 0 16px 32px rgba(31, 182, 166, 0.18);
+  box-shadow: 0 16px 32px rgba(64, 81, 115, 0.18);
   background: rgba(255, 255, 255, 0.98);
 }
 
