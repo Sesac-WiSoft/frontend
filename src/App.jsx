@@ -8,6 +8,7 @@ import RewardsOverview from './pages/rewards/RewardsOverview'
 import RewardShop from './pages/rewards/RewardShop'
 import PurchaseComplete from './pages/rewards/PurchaseComplete'
 import PurchaseHistory from './pages/rewards/PurchaseHistory'
+import AnswerPage from './pages/Answer'
 import AppLayout from './layouts/AppLayout'
 import './index.css'
 
@@ -58,6 +59,14 @@ function AppRoutes() {
           <Route path="complete" element={<PurchaseComplete />} />
           <Route path="history" element={<PurchaseHistory />} />
         </Route>
+        <Route
+          path="answer/:dispatchId?"
+          element={
+            <ProtectedRoute>
+              <AnswerPage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

@@ -5,10 +5,10 @@ import { useAppState } from '../context/AppStateContext'
 import '../styles/layouts/AppLayout.css'
 
 const navItems = [
-  { to: '/coach', label: 'AI 코칭' },
-  { to: '/rewards', label: '리워드 허브' },
+  { to: '/coach', label: 'AI 피드백' },
+  { to: '/rewards', label: '마이 페이지' },
   { to: '/rewards/shop', label: '리워드샵' },
-  { to: '/settings', label: '개인 설정' },
+  { to: '/settings', label: '루틴 설정' },
 ]
 
 const activeLinkClass = ({ isActive }) => (isActive ? 'nav__link nav__link--active' : 'nav__link')
@@ -28,13 +28,14 @@ export default function AppLayout() {
   return (
     <div className="shell">
       <div className="shell__glow" aria-hidden="true" />
+
       <header className={`shell__header ${isLanding ? 'is-transparent' : ''}`}>
         <div className="shell__brand">
           <Link to="/" className="brand">
-            <span className="brand__symbol">◎</span>
+            <span className="brand__symbol">PP</span>
             <span className="brand__meta">
-              <strong>Interview Orbit</strong>
-              <span>AI Interview Coaching Studio</span>
+              <strong>PrePair</strong>
+              <span>AI Interview Partner for Your Best Match</span>
             </span>
           </Link>
         </div>
@@ -72,7 +73,7 @@ export default function AppLayout() {
           )}
 
           {user ? (
-            <Link to="/settings" className="user-chip">
+            <Link to="/rewards" className="user-chip">
               <span className="user-chip__avatar" aria-hidden="true">
                 {user.avatar || '✨'}
               </span>
@@ -84,9 +85,14 @@ export default function AppLayout() {
               </div>
             </Link>
           ) : (
-            <Link to="/auth" className="cta-button">
-              로그인 / 회원가입
-            </Link>
+            <>
+              <Link to="/auth?mode=login" className="cta-button cta-button--ghost">
+                로그인
+              </Link>
+              <Link to="/auth?mode=signup" className="cta-button cta-button--primary">
+                회원가입
+              </Link>
+            </>
           )}
         </div>
       </header>
@@ -107,8 +113,8 @@ export default function AppLayout() {
       </main>
 
       <footer className="shell__footer">
-        <span>© {new Date().getFullYear()} Interview Orbit · AI가 돕는 면접 루틴</span>
-        <span>Beta • Feedback welcome</span>
+        <span>© {new Date().getFullYear()} PrePair · 완벽한 면접 준비를 위한 AI 파트너</span>
+        <span>Beta • 함께 성장할 이야기를 들려주세요</span>
       </footer>
     </div>
   )

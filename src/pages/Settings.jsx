@@ -3,34 +3,43 @@ import { useState } from 'react'
 import { useAppState } from '../context/AppStateContext'
 import '../styles/pages/Settings.css'
 
-const questionCadenceOptions = [
-  { id: 'daily', label: '매일 (주 5회)', detail: '매일 아침 1문제', suggestion: '꾸준한 루틴이 필요할 때 추천' },
-  { id: 'semi', label: '격일 (주 3회)', detail: '월·수·금', suggestion: '복습과 휴식의 밸런스' },
-  { id: 'weekly', label: '주 1회 집중', detail: '일요일 심화 세션', suggestion: '장문의 답변과 회고에 최적' },
-]
-
 const focusAreas = ['프로덕트 전략', '시스템 설계', 'AI 서비스', '사용자 경험', '데이터 분석', '테크 리더십']
 
 export default function SettingsPage() {
-  const { user, updateSettings } = useAppState()
+  const { user, updateSettings, cadencePresets, notificationChannelPresets } = useAppState()
   const [form, setForm] = useState({
     goal: user?.goal ?? '',
     focusArea: user?.focusArea ?? focusAreas[0],
     questionCadence: user?.questionCadence ?? 'daily',
+    notificationChannels: user?.notificationChannels?.filter((channel) => channel !== 'email') ?? [],
   })
   const [status, setStatus] = useState('')
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    const cadenceMeta = questionCadenceOptions.find((item) => item.id === form.questionCadence)
+    const cadenceMeta = cadencePresets.find((item) => item.id === form.questionCadence)
     updateSettings({
       goal: form.goal,
       focusArea: form.focusArea,
       questionCadence: form.questionCadence,
       questionCadenceLabel: cadenceMeta?.label,
+      questionSchedule: cadenceMeta?.schedule,
+      notificationChannels: ['email', ...form.notificationChannels],
     })
     setStatus('저장되었습니다!')
     setTimeout(() => setStatus(''), 2400)
+  }
+
+  const toggleChannel = (channelId) => {
+    setForm((prev) => {
+      if (prev.notificationChannels.includes(channelId)) {
+        return {
+          ...prev,
+          notificationChannels: prev.notificationChannels.filter((id) => id !== channelId),
+        }
+      }
+      return { ...prev, notificationChannels: [...prev.notificationChannels, channelId] }
+    })
   }
 
   return (
@@ -80,30 +89,54 @@ export default function SettingsPage() {
           </div>
         </fieldset>
 
-        <fieldset>
-          <legend>질문 빈도</legend>
-          <div className="settings__cadence">
-            {questionCadenceOptions.map((option) => {
-              const checked = form.questionCadence === option.id
-              return (
-                <label key={option.id} className={`cadence-card ${checked ? 'is-checked' : ''}`}>
-                  <input
-                    type="radio"
-                    name="question-cadence"
-                    value={option.id}
-                    checked={checked}
-                    onChange={() => setForm((prev) => ({ ...prev, questionCadence: option.id }))}
-                  />
-                  <div>
-                    <strong>{option.label}</strong>
-                    <span>{option.detail}</span>
-                    <small>{option.suggestion}</small>
-                  </div>
-                </label>
-              )
-            })}
-          </div>
-        </fieldset>
+          <fieldset>
+            <legend>질문 빈도</legend>
+            <div className="settings__cadence">
+              {cadencePresets.map((option) => {
+                const checked = form.questionCadence === option.id
+                return (
+                  <label key={option.id} className={`cadence-card ${checked ? 'is-checked' : ''}`}>
+                    <input
+                      type="radio"
+                      name="question-cadence"
+                      value={option.id}
+                      checked={checked}
+                      onChange={() => setForm((prev) => ({ ...prev, questionCadence: option.id }))}
+                    />
+                    <div>
+                      <strong>{option.label}</strong>
+                      <span>{option.schedule}</span>
+                      <small>{option.description}</small>
+                    </div>
+                  </label>
+                )
+              })}
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>알림 채널</legend>
+            <div className="settings__channels">
+              {notificationChannelPresets.map((channel) => {
+                const isEmail = channel.id === 'email'
+                const checked = isEmail || form.notificationChannels.includes(channel.id)
+                return (
+                  <label key={channel.id} className={`channel-pill ${isEmail ? 'is-default' : ''}`}>
+                    <input
+                      type="checkbox"
+                      disabled={isEmail}
+                      checked={checked}
+                      onChange={() => toggleChannel(channel.id)}
+                    />
+                    <span>
+                      {channel.label}
+                      {isEmail && <small>(기본)</small>}
+                    </span>
+                  </label>
+                )
+              })}
+            </div>
+          </fieldset>
 
         <button type="submit" className="cta-button cta-button--primary">
           변경 사항 저장

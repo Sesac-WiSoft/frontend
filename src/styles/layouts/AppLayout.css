@@ -5,7 +5,7 @@
   width: 44px;
   height: 44px;
   border-radius: 14px;
-  background: var(--surface-chip);
+  background: rgba(174, 197, 242, 0.35);
   border: 1px solid var(--border);
   transition: transform 0.25s ease, border 0.25s ease, background 0.25s ease;
 }
@@ -56,10 +56,10 @@
   inset: -20vh -20vw;
   z-index: 0;
   background:
-    radial-gradient(ellipse at 15% 20%, rgba(168, 206, 255, 0.4), transparent 55%),
-    radial-gradient(ellipse at 80% 25%, rgba(255, 211, 198, 0.35), transparent 60%),
-    radial-gradient(ellipse at 50% 80%, rgba(205, 238, 255, 0.32), transparent 65%);
-  opacity: 0.75;
+    radial-gradient(ellipse at 18% 22%, rgba(242, 228, 236, 0.7), transparent 55%),
+    radial-gradient(ellipse at 78% 18%, rgba(174, 197, 242, 0.62), transparent 60%),
+    radial-gradient(ellipse at 42% 82%, rgba(201, 219, 242, 0.55), transparent 65%);
+  opacity: 0.8;
 }
 
 .shell__header {
@@ -72,9 +72,9 @@
   padding: 1rem 1.4rem;
   border-radius: var(--radius-lg);
   backdrop-filter: blur(22px);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-soft);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(64, 81, 115, 0.18);
+  box-shadow: 0 20px 44px rgba(64, 81, 115, 0.18);
   margin: 1.5rem auto;
   width: min(1240px, 100%);
 }
@@ -101,8 +101,8 @@
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: radial-gradient(circle at 30% 20%, rgba(165, 205, 255, 0.8), rgba(255, 214, 210, 0.7));
-  color: var(--text-primary);
+  background: radial-gradient(circle at 25% 25%, rgba(174, 197, 242, 0.9), rgba(64, 81, 115, 0.82));
+  color: #f8faff;
   font-weight: 700;
 }
 
@@ -132,23 +132,23 @@
   padding: 0.55rem 1rem;
   border-radius: 999px;
   font-weight: 500;
-  color: var(--text-secondary);
-  border: 1px solid var(--border-soft);
+  color: rgba(20, 31, 64, 0.72);
+  border: 1px solid rgba(64, 81, 115, 0.16);
   transition: color 0.25s ease, background 0.25s ease, border 0.25s ease;
 }
 
 .nav__link:hover,
 .nav__link:focus-visible {
-  color: var(--accent-blue);
-  background: rgba(63, 123, 255, 0.12);
-  border-color: var(--border);
+  color: var(--accent-primary);
+  background: rgba(174, 197, 242, 0.2);
+  border-color: rgba(64, 81, 115, 0.28);
 }
 
 .nav__link--active {
-  color: var(--accent-blue);
-  background: rgba(63, 123, 255, 0.18);
-  border-color: var(--border-strong);
-  box-shadow: 0 10px 26px rgba(123, 170, 255, 0.26);
+  color: #f7f9ff;
+  background: var(--accent-primary);
+  border-color: rgba(64, 81, 115, 0.4);
+  box-shadow: 0 14px 32px rgba(64, 81, 115, 0.26);
 }
 
 .shell__actions {
@@ -156,6 +156,7 @@
   align-items: center;
   gap: 0.9rem;
   justify-content: flex-end;
+  flex-wrap: wrap;
 }
 
 .user-chip {
@@ -164,8 +165,8 @@
   gap: 0.8rem;
   border-radius: 999px;
   padding: 0.6rem 1rem;
-  background: var(--surface-chip);
-  border: 1px solid var(--border);
+  background: rgba(174, 197, 242, 0.28);
+  border: 1px solid rgba(64, 81, 115, 0.18);
   transition: transform 0.25s ease, border 0.25s ease;
 }
 
@@ -182,7 +183,7 @@
   display: grid;
   place-items: center;
   font-size: 1.25rem;
-  background: rgba(63, 123, 255, 0.12);
+  background: rgba(64, 81, 115, 0.12);
 }
 
 .user-chip__meta {
