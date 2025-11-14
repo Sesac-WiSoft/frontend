@@ -1,88 +1,98 @@
 .rewards {
     display: grid;
-    gap: 2.8rem;
-    padding: 2.6rem 0 4.4rem;
+    gap: 3rem;
+    padding: clamp(2.4rem, 4vw, 4.6rem) 0 4.8rem;
+    position: relative;
+    isolation: isolate;
+}
+
+.rewards::before,
+.rewards::after {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    border-radius: 50%;
+    filter: blur(6px);
+    opacity: 0.45;
+}
+
+.rewards::before {
+    top: 0;
+    left: 5%;
+    width: clamp(200px, 30vw, 360px);
+    height: clamp(200px, 30vw, 360px);
+    background: radial-gradient(circle, rgba(174, 197, 242, 0.35), transparent 65%);
+}
+
+.rewards::after {
+    bottom: 5%;
+    right: 0;
+    width: clamp(220px, 34vw, 420px);
+    height: clamp(220px, 34vw, 420px);
+    background: radial-gradient(circle, rgba(242, 228, 236, 0.45), transparent 60%);
 }
 
 .rewards__header {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 2rem;
-    align-items: center;
+    gap: 1.8rem;
+    align-items: flex-end;
 }
 
 .rewards__header h1 {
-    margin: 1rem 0 0.6rem;
-    font-size: clamp(2.1rem, 3vw, 2.7rem);
+    margin: 0.4rem 0 0.2rem;
+    font-size: clamp(2.1rem, 3vw, 2.8rem);
+    letter-spacing: -0.01em;
 }
 
 .rewards__header p {
     margin: 0;
-    color: rgba(20, 31, 64, 0.7);
+    color: rgba(20, 31, 64, 0.72);
     max-width: 32rem;
+    line-height: 1.7;
 }
 
 .rewards__cta {
     display: inline-flex;
     flex-wrap: wrap;
     gap: 0.9rem;
+    justify-content: flex-end;
 }
 
-.rewards__banner {
-    display: grid;
+.rewards__points-chip {
+    display: inline-flex;
+    align-items: center;
     gap: 0.6rem;
-    padding: 1.6rem 1.8rem;
-    border-radius: var(--radius-md);
-    background: rgba(174, 197, 242, 0.28);
-    border: 1px solid rgba(64, 81, 115, 0.24);
-    box-shadow: 0 16px 34px rgba(64, 81, 115, 0.18);
-}
-
-.rewards__banner p {
-    margin: 0;
-    color: rgba(20, 31, 64, 0.7);
-}
-
-.rewards__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.2rem;
-}
-
-.reward-card {
-    padding: 1.6rem;
-    border-radius: var(--radius-md);
-    background: rgba(255, 255, 255, 0.94);
+    padding: 0.75rem 1.4rem;
+    border-radius: 999px;
     border: 1px solid rgba(64, 81, 115, 0.2);
-    display: grid;
-    gap: 0.5rem;
-    box-shadow: 0 18px 36px rgba(64, 81, 115, 0.15);
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 16px 32px rgba(64, 81, 115, 0.12);
 }
 
-.reward-card span {
-    font-size: 0.88rem;
-    color: rgba(20, 31, 64, 0.62);
-    text-transform: uppercase;
+.rewards__points-chip span {
+    font-size: 0.85rem;
     letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(20, 31, 64, 0.6);
 }
 
-.reward-card strong {
-    font-size: 1.6rem;
+.rewards__points-chip strong {
+    font-size: 1.2rem;
     color: var(--accent-primary);
-}
-
-.reward-card--points {
-    background: linear-gradient(160deg, rgba(242, 228, 236, 0.78), rgba(201, 219, 242, 0.78));
-    border-color: rgba(64, 81, 115, 0.24);
 }
 
 .rewards__dispatch,
 .rewards__history,
 .rewards__heatmap,
 .rewards__purchases {
+    position: relative;
+    z-index: 1;
     display: grid;
-    gap: 1.4rem;
+    gap: 1.5rem;
 }
 
 .rewards__dispatch header,
@@ -106,54 +116,67 @@
 .rewards__heatmap header p,
 .rewards__purchases header p {
     margin: 0;
-    color: rgba(20, 31, 64, 0.62);
+    color: rgba(20, 31, 64, 0.64);
 }
 
 .dispatch-card {
+    position: relative;
     display: grid;
-    gap: 1.1rem;
-    padding: 1.8rem;
-    border-radius: var(--radius-md);
-    border: 1px solid rgba(64, 81, 115, 0.22);
-    background: rgba(255, 255, 255, 0.94);
-    box-shadow: 0 18px 36px rgba(64, 81, 115, 0.16);
+    gap: 1rem;
+    padding: clamp(1.5rem, 3vw, 2.1rem);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(64, 81, 115, 0.2);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(174, 197, 242, 0.28));
+    box-shadow: 0 28px 48px rgba(64, 81, 115, 0.16);
+    overflow: hidden;
+}
+
+.dispatch-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px dashed rgba(64, 81, 115, 0.22);
+    pointer-events: none;
+    opacity: 0.5;
 }
 
 .dispatch-card__meta {
     display: inline-flex;
     flex-wrap: wrap;
     gap: 0.6rem;
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgba(20, 31, 64, 0.6);
+    color: rgba(20, 31, 64, 0.65);
 }
 
 .dispatch-card h3 {
     margin: 0;
-    font-size: clamp(1.4rem, 2.4vw, 1.7rem);
+    font-size: clamp(1.4rem, 2.4vw, 1.8rem);
     color: var(--accent-primary);
 }
 
 .dispatch-card p {
     margin: 0;
-    color: rgba(20, 31, 64, 0.7);
+    color: rgba(20, 31, 64, 0.78);
 }
 
 .dispatch-card__tags,
 .history-item__tags {
     display: inline-flex;
     flex-wrap: wrap;
-    gap: 0.6rem;
+    gap: 0.5rem;
 }
 
 .dispatch-card__tags span,
 .history-item__tags span {
-    padding: 0.35rem 0.7rem;
+    padding: 0.35rem 0.8rem;
     border-radius: 999px;
-    border: 1px solid rgba(64, 81, 115, 0.2);
-    background: rgba(174, 197, 242, 0.2);
-    font-size: 0.8rem;
+    border: 1px solid rgba(64, 81, 115, 0.22);
+    background: rgba(255, 255, 255, 0.9);
+    font-size: 0.78rem;
+    box-shadow: 0 8px 18px rgba(64, 81, 115, 0.12);
 }
 
 .dispatch-card__actions {
@@ -162,18 +185,92 @@
     gap: 0.8rem;
 }
 
+.dispatch-card--empty {
+    text-align: center;
+    justify-items: center;
+}
+
+.rewards__grid,
+.purchase-grid {
+    display: grid;
+    gap: 1.3rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.reward-card,
+.purchase-card {
+    position: relative;
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(64, 81, 115, 0.18);
+    display: grid;
+    gap: 0.7rem;
+    box-shadow: 0 20px 44px rgba(64, 81, 115, 0.14);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.reward-card:hover,
+.purchase-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 28px 54px rgba(64, 81, 115, 0.18);
+}
+
+.reward-card span {
+    font-size: 0.82rem;
+    color: rgba(20, 31, 64, 0.62);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.reward-card strong {
+    font-size: 1.5rem;
+    color: var(--accent-primary);
+}
+
+.reward-card--points {
+    background: linear-gradient(160deg, rgba(242, 228, 236, 0.8), rgba(201, 219, 242, 0.8));
+}
+
+.purchase-card__meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.6rem;
+    font-size: 0.86rem;
+    color: rgba(20, 31, 64, 0.64);
+}
+
 .history-list {
     display: grid;
     gap: 1rem;
 }
 
 .history-item {
+    position: relative;
     display: grid;
     gap: 0.6rem;
-    padding: 1.4rem;
-    border-radius: var(--radius-md);
+    padding: 1.4rem 1.6rem;
+    border-radius: var(--radius-lg);
     border: 1px solid rgba(64, 81, 115, 0.18);
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 20px 44px rgba(64, 81, 115, 0.14);
+}
+
+.history-item::before {
+    content: '';
+    position: absolute;
+    top: 1.2rem;
+    left: 0.9rem;
+    width: 6px;
+    height: calc(100% - 2.4rem);
+    border-radius: 999px;
+    background: linear-gradient(180deg, rgba(174, 197, 242, 0.8), rgba(242, 228, 236, 0.8));
+    opacity: 0.7;
+}
+
+.history-item > * {
+    position: relative;
+    z-index: 1;
 }
 
 .history-item > div {
@@ -192,54 +289,40 @@
 
 .history-item p {
     margin: 0;
-    color: rgba(20, 31, 64, 0.72);
+    color: rgba(20, 31, 64, 0.76);
 }
 
 .rewards__empty {
     margin: 0;
     color: rgba(20, 31, 64, 0.6);
-    font-size: 0.9rem;
-}
-
-.purchase-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.2rem;
-}
-
-.purchase-card {
-    padding: 1.3rem;
-    border-radius: var(--radius-md);
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(64, 81, 115, 0.18);
-    display: grid;
-    gap: 0.6rem;
-}
-
-.purchase-card__meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.6rem;
-    color: rgba(20, 31, 64, 0.6);
-    font-size: 0.85rem;
+    font-size: 0.92rem;
 }
 
 @media (max-width: 900px) {
-    .rewards__grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    }
-}
-
-@media (max-width: 768px) {
-    .rewards {
-        padding: 2.2rem 0 3.6rem;
-        gap: 2.4rem;
-    }
-
     .rewards__header {
         flex-direction: column;
         align-items: flex-start;
+    }
+
+    .rewards__cta {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .rewards__points-chip {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .dispatch-card {
+        border-radius: var(--radius-md);
+    }
+}
+
+@media (max-width: 720px) {
+    .rewards {
+        gap: 2.4rem;
+        padding-bottom: 3.6rem;
     }
 
     .dispatch-card__actions {
@@ -247,80 +330,26 @@
     }
 
     .dispatch-card__actions .cta-button {
-        flex: 1 1 auto;
+        flex: 1 1 100%;
+        text-align: center;
     }
 
-    .purchase-grid,
-    .rewards__grid {
+    .rewards__grid,
+    .purchase-grid {
         grid-template-columns: 1fr;
     }
 }
 
 @media (max-width: 540px) {
     .rewards__cta {
-        width: 100%;
+        gap: 0.6rem;
     }
 
-    .rewards__cta .cta-button {
-        flex: 1 1 auto;
-    }
-
-    .dispatch-card,
-    .history-item,
     .reward-card,
-    .purchase-card {
+    .purchase-card,
+    .history-item,
+    .dispatch-card {
         padding: 1.2rem;
     }
-}
-
-/* Rewards.css 파일에 이 내용이 있는지 확인하거나 추가해주세요. */
-
-.rewards__header {
-    display: flex;
-    flex-direction: column; /* 모바일 기본: 세로 정렬 */
-    justify-content: space-between;
-    gap: 1.5rem;
-    margin-bottom: 1rem;
-}
-
-.rewards__cta {
-    display: flex;
-    flex-wrap: wrap; /* 모바일에서 버튼들이 줄바꿈되도록 */
-    gap: 12px;
-    align-items: center; /* 요소들 세로 정렬 */
-}
-
-/* 포인트 칩 스타일 */
-.rewards__points-chip {
-    background-color: rgba(255, 255, 255, 0.6);
-    border: 1px solid var(--border-color-light);
-    padding: 8px 14px;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-grow: 1; /* 모바일에서 칩이 남는 공간 차지 */
-}
-
-.rewards__points-chip span {
-    font-size: 14px;
-    color: var(--text-color-secondary);
-}
-
-.rewards__points-chip strong {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--brand-color-dark); /* 테마 색상에 맞게 조정 */
-}
-
-/* 메인 질문 카드를 더 강조 */
-.rewards__dispatch--main {
-    margin-top: 1.5rem;
-}
-
-.dispatch-card--empty {
-    padding: 2rem;
-    text-align: center;
-    gap: 1rem;
 }
 
