@@ -1,48 +1,48 @@
- .signup-success {
-     width: 100%;
-     padding: 3rem 1.25rem 4.6rem;
-     overflow-x: hidden;
- }
+.signup-success {
+    width: 100%;
+    padding: 3rem 1.25rem 4.6rem;
+    overflow-x: hidden;
+}
 
- .signup-success__card {
-     min-height: clamp(320px, 55vw, 420px);
-     display: flex;
-     justify-content: center;
-     align-items: center;
-     padding: clamp(2rem, 5vw, 2.6rem);
-     overflow: hidden;
- }
+.signup-success__card {
+    min-height: clamp(320px, 55vw, 420px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: clamp(2rem, 5vw, 2.6rem);
+    overflow: hidden;
+}
 
- .signup-success__stage {
-     width: 100%;
-     display: flex;
-     flex-direction: column;
-     align-items: center;
-     text-align: center;
-     gap: 1rem;
- }
+.signup-success__stage {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+}
 
- .signup-success__stage svg {
-     width: clamp(52px, 15vw, 76px);
-     height: clamp(52px, 15vw, 76px);
- }
+.signup-success__stage svg {
+    width: clamp(52px, 15vw, 76px);
+    height: clamp(52px, 15vw, 76px);
+}
 
- .signup-success__stage h2 {
-     margin: 0;
- }
+.signup-success__stage h2 {
+    margin: 0;
+}
 
- .signup-success__stage p {
-     margin: 0.5rem 0 1.5rem;
- }
+.signup-success__stage p {
+    margin: 0.5rem 0 1.5rem;
+}
 
- @media (min-width: 768px) {
-     .signup-success {
-         padding: 3rem 0 4.6rem;
-     }
- }
+@media (min-width: 768px) {
+    .signup-success {
+        padding: 3rem 0 4.6rem;
+    }
+}
 
- @media (max-width: 480px) {
-     .signup-success__card {
-         min-height: 300px;
-     }
- }
+@media (max-width: 480px) {
+    .signup-success__card {
+        min-height: 300px;
+    }
+}

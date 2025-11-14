@@ -44,8 +44,15 @@ const CheckCircleIcon = () => (
 
 // --- 애니메이션 Variants ---
 
-// 아이콘이 나타나고 사라지는 효과
-const iconVariants = {
+// [MODIFIED] 1. 스테이지(배경)용 Variants (단순 Fade-in/out)
+const stageVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { duration: 0.3 } },
+    exit: { opacity: 0, transition: { duration: 0.2 } }
+};
+
+// [MODIFIED] 2. '발송 완료' 아이콘용 Variants
+const sentIconVariants = {
     hidden: { opacity: 0, scale: 0.5 },
     visible: {
         opacity: 1,
@@ -55,19 +62,23 @@ const iconVariants = {
     exit: { opacity: 0, scale: 0.2, transition: { duration: 0.3 } }
 };
 
-// 종이 비행기 비행 모션
-const sendingVariants = {
-    hidden: { opacity: 0, x: '-60%', rotate: -15 },
-    visible: {
-        opacity: [0, 1, 1, 1, 0], // 깜빡이며 나타났다가 사라짐
-        x: ['-60%', '60%', '60%', '60%', '60%'], // 컨테이너 안에서만 비행
-        rotate: -15,
+// [MODIFIED] 3. '발송 중' 비행기 아이콘용 Variants (중앙에서 펄스)
+const sendingIconVariants = {
+    hidden: { opacity: 0, scale: 0.8 }, // 시작 (중앙, 안보임)
+    visible: { // "보이는" 상태 = 펄스 애니메이션
+        opacity: [0.7, 1, 0.7], // 투명도 0.7 -> 1 -> 0.7 반복
+        scale: [1, 1.05, 1],    // 크기 100% -> 105% -> 100% 반복
         transition: {
-            duration: 2.0, // 2초 동안
-            ease: "easeInOut",
-            times: [0, 0.2, 0.8, 0.9, 1] // 애니메이션 타이밍 조절
+            duration: 1.5,
+            repeat: Infinity, // 'sent' 상태가 될 때까지 무한 반복
+            ease: "easeInOut"
         }
     },
+    exit: { // "사라지는" 상태
+        opacity: 0,
+        scale: 0.8,
+        transition: { duration: 0.3 }
+    }
 };
 
 export default function SignupSuccessPage() {
@@ -95,29 +106,40 @@ export default function SignupSuccessPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
             >
-                {/* AnimatePresence를 사용하여 'sending'과 'sent' 상태가
-                  부드럽게 전환되도록 합니다.
-                */}
                 <AnimatePresence mode="wait">
-                        {status === 'sending' ? (
+                    {status === 'sending' ? (
                         <motion.div
                             key="sending"
-                                className="signup-success__stage"
-                            variants={sendingVariants}
+                            className="signup-success__stage"
+                            variants={stageVariants} // 스테이지는 단순 fade-in
                             initial="hidden"
                             animate="visible"
-                            exit="hidden" // 'visible'과 동일한 트랜지션을 사용하되, 자연스럽게 사라지도록
+                            exit="exit"
                         >
-                            <PaperPlaneIcon />
-                            <h2 style={{ marginTop: '1.5rem', fontSize: '1.2rem', color: '#333' }}>
+                            {/* 아이콘에 펄스 애니메이션 적용 */}
+                            <motion.div
+                                variants={sendingIconVariants}
+                                initial="hidden"
+                                animate="visible"
+                                exit="exit" // [MODIFIED] exit 속성 추가
+                            >
+                                <PaperPlaneIcon />
+                            </motion.div>
+
+                            {/* 텍스트도 motion.h2로 변경하여 fade-in 효과 추가 */}
+                            <motion.h2
+                                style={{ marginTop: '1.5rem', fontSize: '1.2rem', color: '#333' }}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1, transition: { delay: 0.2 } }}
+                            >
                                 오늘의 질문을 발송 중입니다...
-                            </h2>
+                            </motion.h2>
                         </motion.div>
                     ) : (
-                            <motion.div
+                        <motion.div
                             key="sent"
-                                className="signup-success__stage"
-                            variants={iconVariants}
+                            className="signup-success__stage"
+                            variants={sentIconVariants} // '발송 완료'용 variant 사용
                             initial="hidden"
                             animate="visible"
                         >
@@ -126,7 +148,7 @@ export default function SignupSuccessPage() {
                                 발송되었습니다!
                             </h2>
                             <p style={{ margin: '0.5rem 0 1.5rem', fontSize: '0.95rem', color: '#555' }}>
-                                가입하신 이메일(및 카카오톡)을 확인해주세요.
+                                이메일을 확인해주세요.
                             </p>
                             <button
                                 type="button"
