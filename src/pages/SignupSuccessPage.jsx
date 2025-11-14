@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { useEffect, useState } from 'react'
-// === 1. useNavigate import 제거 ===
-// import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import '../styles/pages/SignupSuccess.css'
 
 // --- 인라인 SVG 아이콘 ---
 
@@ -57,10 +57,10 @@ const iconVariants = {
 
 // 종이 비행기 비행 모션
 const sendingVariants = {
-    hidden: { opacity: 0, x: -100, rotate: -15 },
+    hidden: { opacity: 0, x: '-60%', rotate: -15 },
     visible: {
         opacity: [0, 1, 1, 1, 0], // 깜빡이며 나타났다가 사라짐
-        x: [-100, 100, 100, 100, 100], // 오른쪽으로 비행
+        x: ['-60%', '60%', '60%', '60%', '60%'], // 컨테이너 안에서만 비행
         rotate: -15,
         transition: {
             duration: 2.0, // 2초 동안
@@ -71,8 +71,7 @@ const sendingVariants = {
 };
 
 export default function SignupSuccessPage() {
-    // === 2. useNavigate hook 호출 제거 ===
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const [status, setStatus] = useState('sending'); // 'sending', 'sent'
 
     useEffect(() => {
@@ -84,44 +83,26 @@ export default function SignupSuccessPage() {
     }, []);
 
     const goToMyPage = () => {
-        // AuthPage에서 사용하던 'rewards'나 'my-page' 등 실제 마이페이지 경로로 수정하세요.
-
-        // === 3. navigate() 대신 window.location.href 사용 ===
-        // navigate('/rewards');
-        // 'useNavigate' hook이 <Router> 컨텍스트 외부에서 호출되어 오류가 발생했습니다.
-        // preivew 환경의 한계로 보이므로, 임시로 window.location.href를 사용해 이동을 시뮬레이션합니다.
-        // 실제 애플리케이션에서는 react-router-dom의 Link 컴포넌트나 useNavigate를 사용하는 것이 올바른 방법입니다.
-        console.log("Navigating to /rewards ...");
-        window.location.href = '/rewards';
+        navigate('/rewards');
     };
 
     // AuthPage의 레이아웃 클래스를 재사용하여 일관성 유지
     return (
-        <div className="auth">
+        <div className="auth signup-success">
             <motion.section
-                className="auth__form" // AuthPage와 동일한 카드 스타일 재사용
+                className="auth__form signup-success__card" // AuthPage와 동일한 카드 스타일 재사용
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                // CSS에서 .auth__form에 min-height가 설정되어 있다고 가정합니다.
-                // 없다면, 레이아웃을 위해 인라인 스타일 추가
-                style={{ minHeight: '350px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
             >
                 {/* AnimatePresence를 사용하여 'sending'과 'sent' 상태가
                   부드럽게 전환되도록 합니다.
                 */}
                 <AnimatePresence mode="wait">
-                    {status === 'sending' ? (
+                        {status === 'sending' ? (
                         <motion.div
                             key="sending"
-                            // CSS 클래스나 인라인 스타일로 내부 정렬
-                            style={{
-                                textAlign: 'center',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                width: '100%'
-                            }}
+                                className="signup-success__stage"
                             variants={sendingVariants}
                             initial="hidden"
                             animate="visible"
@@ -133,15 +114,9 @@ export default function SignupSuccessPage() {
                             </h2>
                         </motion.div>
                     ) : (
-                        <motion.div
+                            <motion.div
                             key="sent"
-                            style={{
-                                textAlign: 'center',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                width: '100%'
-                            }}
+                                className="signup-success__stage"
                             variants={iconVariants}
                             initial="hidden"
                             animate="visible"
@@ -154,6 +129,7 @@ export default function SignupSuccessPage() {
                                 가입하신 이메일(및 카카오톡)을 확인해주세요.
                             </p>
                             <button
+                                type="button"
                                 onClick={goToMyPage}
                                 className="cta-button cta-button--primary" // AuthPage와 동일한 버튼 스타일 재사용
                             >
