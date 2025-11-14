@@ -7,7 +7,8 @@
     border-radius: 14px;
     background: rgba(174, 197, 242, 0.35);
     border: 1px solid var(--border);
-    transition: transform 0.25s ease, border 0.25s ease, background 0.25s ease;
+    transition: transform 0.25s ease, border 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 0 12px 24px rgba(64, 81, 115, 0.14);
 }
 
 .menu-toggle:focus-visible,
@@ -41,6 +42,12 @@
 
 .menu-toggle[aria-expanded='true'] .menu-toggle__icon span:nth-child(3) {
     transform: translateY(-8px) rotate(-45deg);
+}
+
+.menu-toggle[aria-expanded='true'] {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(64, 81, 115, 0.28);
+    box-shadow: 0 16px 32px rgba(64, 81, 115, 0.2);
 }
 
 .shell {
@@ -127,6 +134,8 @@
     align-items: center;
     justify-content: center;
     gap: 1.2rem;
+    position: relative;
+    z-index: 5;
 }
 
 .nav__link {
@@ -324,30 +333,31 @@
         display: inline-flex;
     }
 
-    .shell__nav {
-        display: none;
-        position: absolute;
-        top: calc(100% + 0.75rem);
-        left: 1.2rem;
-        right: 1.2rem;
-        padding: 1rem;
-        border-radius: var(--radius-md);
-        background: var(--surface);
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow-soft);
-        backdrop-filter: blur(18px);
-        display: grid;
-        gap: 0.6rem;
-        z-index: 20;
-    }
+      .shell__nav {
+          display: grid;
+          position: absolute;
+          top: calc(100% + 0.75rem);
+          left: 1.2rem;
+          right: 1.2rem;
+          padding: 1rem;
+          border-radius: var(--radius-md);
+          background: rgba(255, 255, 255, 0.95);
+          border: 1px solid rgba(64, 81, 115, 0.2);
+          box-shadow: var(--shadow-soft);
+          backdrop-filter: blur(18px);
+          gap: 0.6rem;
+          z-index: 20;
+          opacity: 0;
+          pointer-events: none;
+          transform: translateY(-10px) scale(0.98);
+          transition: opacity 0.25s ease, transform 0.25s ease, border 0.25s ease;
+      }
 
-    .shell__nav:not(.is-open) {
-        display: none;
-    }
-
-    .shell__nav.is-open {
-        display: grid;
-    }
+      .shell__nav.is-open {
+          opacity: 1;
+          pointer-events: auto;
+          transform: translateY(0) scale(1);
+      }
 
     .shell__nav .nav__link {
         width: 100%;
