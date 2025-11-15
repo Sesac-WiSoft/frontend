@@ -6,10 +6,10 @@ import '../styles/layouts/AppLayout.css'
 import brandLogo from '/src/assets/b01fa81ce7a959934e8f78fc6344081972afd0ae.png' // 1. 로고 파일 import
 
 const navItems = [
-    { to: '/coach', label: 'AI 피드백' },
-    { to: '/rewards', label: '마이 페이지' },
-    { to: '/rewards/shop', label: '리워드샵' },
-    { to: '/settings', label: '루틴 설정' },
+    { to: '/rewards', label: 'home' },
+    { to: '/coach', label: 'coach' },
+    { to: '/rewards/shop', label: 'reward' },
+    { to: '/settings', label: 'settings' },
 ]
 
 const activeLinkClass = ({ isActive }) => (isActive ? 'nav__link nav__link--active' : 'nav__link')
@@ -34,7 +34,6 @@ export default function AppLayout() {
             <header className={`shell__header ${isLanding ? 'is-transparent' : ''}`}>
                 <div className="shell__brand">
                     <Link to="/" className="brand">
-                        {/* 2. <span>을 <img> 태그로 교체 */}
                         <img src={brandLogo} alt="PrePair 로고" className="brand__symbol" />
                         <span className="brand__meta">
               <strong>PrePair</strong>
@@ -49,7 +48,12 @@ export default function AppLayout() {
                 >
                     {showNavElements &&
                         navItems.map((item) => (
-                            <NavLink key={item.to} to={item.to} className={activeLinkClass}>
+                            <NavLink
+                                key={item.to}
+                                to={item.to}
+                                className={activeLinkClass}
+                                end
+                            >
                                 {item.label}
                             </NavLink>
                         ))}
