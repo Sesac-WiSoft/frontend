@@ -118,11 +118,17 @@ export default function RewardShop() {
   const [selectedReward, setSelectedReward] = useState(null)
   const [isModalOpen, setModalOpen] = useState(false)
   const [modalError, setModalError] = useState('')
+  const [activeCategoryId, setActiveCategoryId] = useState(rewardCatalog[0]?.id ?? null)
 
   const remainingPoints = useMemo(() => {
     if (!user || !selectedReward) return null
     return user.points - selectedReward.cost
   }, [selectedReward, user])
+
+  const activeCategory = useMemo(() => {
+    if (!rewardCatalog.length) return null
+    return rewardCatalog.find((category) => category.id === activeCategoryId) ?? rewardCatalog[0]
+  }, [activeCategoryId])
 
   const handleSelectReward = (item, category) => {
     if (!item) return
@@ -169,25 +175,46 @@ export default function RewardShop() {
         </div>
       </header>
 
-      <section className="reward-shop__categories">
-        {rewardCatalog.map((category) => (
-          <article key={category.id} className="reward-category">
+      {rewardCatalog.length > 0 && (
+        <div className="reward-shop__filters" role="tablist" aria-label="리워드 카테고리 선택">
+          {rewardCatalog.map((category) => {
+            const isActive = category.id === activeCategoryId
+            return (
+              <button
+                key={category.id}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                className={`reward-chip ${isActive ? 'is-active' : ''}`}
+                onClick={() => setActiveCategoryId(category.id)}
+              >
+                <span>{category.meta}</span>
+                <strong>{category.title}</strong>
+              </button>
+            )
+          })}
+        </div>
+      )}
+
+      <section className="reward-shop__categories" aria-live="polite">
+        {activeCategory ? (
+          <article key={activeCategory.id} className="reward-category">
             <header className="reward-category__header">
               <div>
-                <p className="reward-category__meta">{category.meta}</p>
-                <h2>{category.title}</h2>
-                <p>{category.description}</p>
+                <p className="reward-category__meta">{activeCategory.meta}</p>
+                <h2>{activeCategory.title}</h2>
+                <p>{activeCategory.description}</p>
               </div>
             </header>
             <div className="reward-category__items">
-              {category.items.map((item) => {
+              {activeCategory.items.map((item) => {
                 const disabled = (user?.points ?? 0) < item.cost
                 return (
                   <div key={item.id} className={`reward-item ${disabled ? 'is-disabled' : ''}`}>
                     <div className="reward-item__accent" style={{ backgroundImage: item.gradient }} aria-hidden="true" />
                     <div className="reward-item__content">
                       <div className="reward-item__meta">
-                        <span className="reward-item__category">{category.title}</span>
+                        <span className="reward-item__category">{activeCategory.title}</span>
                         {item.badge && <span className="reward-item__badge">{item.badge}</span>}
                       </div>
                       <strong>{item.name}</strong>
@@ -201,7 +228,7 @@ export default function RewardShop() {
                       )}
                       <div className="reward-item__footer">
                         <span>{item.cost.toLocaleString()} pts</span>
-                        <button type="button" onClick={() => handleSelectReward(item, category)} disabled={disabled}>
+                        <button type="button" onClick={() => handleSelectReward(item, activeCategory)} disabled={disabled}>
                           교환하기
                         </button>
                       </div>
@@ -211,7 +238,9 @@ export default function RewardShop() {
               })}
             </div>
           </article>
-        ))}
+        ) : (
+          <p className="reward-shop__empty">표시할 리워드 카테고리가 없습니다.</p>
+        )}
       </section>
 
       <Modal

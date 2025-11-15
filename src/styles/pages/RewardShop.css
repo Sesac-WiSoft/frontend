@@ -69,6 +69,52 @@
     gap: 2.4rem;
 }
 
+.reward-shop__filters {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    padding: 0.2rem 0 0.6rem;
+}
+
+.reward-chip {
+    border: 1px solid rgba(64, 81, 115, 0.2);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.85);
+    padding: 0.65rem 1.2rem;
+    min-width: 180px;
+    display: grid;
+    gap: 0.12rem;
+    cursor: pointer;
+    transition: border 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    text-align: left;
+}
+
+.reward-chip span {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(20, 31, 64, 0.55);
+}
+
+.reward-chip strong {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--accent-primary);
+}
+
+.reward-chip.is-active {
+    border-color: transparent;
+    background: linear-gradient(120deg, rgba(95, 140, 255, 0.95), rgba(95, 205, 255, 0.9));
+    box-shadow: 0 14px 28px rgba(64, 81, 115, 0.22);
+}
+
+.reward-chip.is-active span,
+.reward-chip.is-active strong {
+    color: #fff;
+}
+
 .reward-category {
     display: grid;
     gap: 1.3rem;
@@ -219,6 +265,16 @@
     cursor: not-allowed;
 }
 
+.reward-shop__empty {
+    margin: 0;
+    padding: 1.8rem;
+    border-radius: var(--radius-lg);
+    background: rgba(244, 247, 255, 0.7);
+    border: 1px dashed rgba(64, 81, 115, 0.32);
+    color: rgba(20, 31, 64, 0.65);
+    text-align: center;
+}
+
 .redeem-confirm {
     display: grid;
     gap: 1.2rem;
@@ -308,5 +364,22 @@
 
     .reward-category {
         padding: 1.4rem;
+    }
+
+    .reward-shop__filters {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 0.4rem;
+        margin: 0 -0.5rem;
+        padding-left: 0.5rem;
+        scrollbar-width: none;
+    }
+
+    .reward-shop__filters::-webkit-scrollbar {
+        display: none;
+    }
+
+    .reward-chip {
+        min-width: 200px;
     }
 }
