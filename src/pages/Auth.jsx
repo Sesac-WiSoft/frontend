@@ -365,7 +365,7 @@ export default function AuthPage() {
                         </label>
 
                         <button type="submit" className="cta-button cta-button--primary" disabled={loginDisabled}>
-                            로그인 후 마이 페이지로 이동
+                            로그인
                         </button>
                     </form>
                 )}

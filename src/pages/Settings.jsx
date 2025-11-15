@@ -156,9 +156,6 @@ export default function SettingsPage() {
                                             </option>
                                         ))}
                                     </select>
-                                    {selectedTrack?.description && (
-                                        <p className="settings__field-note">{selectedTrack.description}</p>
-                                    )}
                                 </div>
                             ) : (
                                 <p className="settings__empty">직무 정보를 불러오는 중입니다.</p>
@@ -188,35 +185,8 @@ export default function SettingsPage() {
                             ) : (
                                 <p className="settings__empty">먼저 직군을 선택해 주세요.</p>
                             )}
-                            {selectedRole?.example && (
-                                <p className="settings__field-note">예시 키워드 · {selectedRole.example}</p>
-                            )}
-                            {selectedRole?.reason && <p className="settings__role-hint">{selectedRole.reason}</p>}
                         </div>
 
-                        <div className="settings__group">
-                            <p className="settings__subhead">관심 분야</p>
-                            <div className="settings__focus-grid">
-                                {focusAreas.map((area) => {
-                                    const checked = form.focusAreaId === area.id
-                                    return (
-                                        <label key={area.id} className={`focus-card ${checked ? 'is-checked' : ''}`}>
-                                            <input
-                                                type="radio"
-                                                name="focus-area"
-                                                value={area.id}
-                                                checked={checked}
-                                                onChange={() => handleFocusSelect(area.id)}
-                                            />
-                                            <div>
-                                                <strong>{area.label}</strong>
-                                                <small>{area.description}</small>
-                                            </div>
-                                        </label>
-                                    )
-                                })}
-                            </div>
-                        </div>
                     </div>
                 </fieldset>
 
