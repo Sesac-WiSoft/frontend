@@ -485,3 +485,6 @@
     }
 }
 
+cta-button cta-button--ghost {
+    width: 200%;
+}

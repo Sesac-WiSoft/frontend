@@ -1,185 +1,185 @@
 .purchase-complete {
-  display: grid;
-  gap: 2.2rem;
-  padding: clamp(2rem, 4vw, 4.2rem) 0 4.2rem;
-  position: relative;
-  isolation: isolate;
-  text-align: center;
+    display: grid;
+    gap: 2.2rem;
+    padding: clamp(2rem, 4vw, 4.2rem) 0 4.2rem;
+    position: relative;
+    isolation: isolate;
+    text-align: center;
 }
 
 .purchase-complete::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 0%, rgba(174, 197, 242, 0.35), transparent 55%);
-  z-index: 0;
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(174, 197, 242, 0.35), transparent 55%);
+    z-index: 0;
 }
 
 .purchase-complete header {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  gap: 0.4rem;
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 0.4rem;
 }
 
 .purchase-complete header h1 {
-  margin: 0.9rem 0 0.2rem;
-  font-size: clamp(2.1rem, 3vw, 2.7rem);
+    margin: 0.9rem 0 0.2rem;
+    font-size: clamp(2.1rem, 3vw, 2.7rem);
 }
 
 .purchase-complete header p {
-  margin: 0;
-  color: rgba(20, 31, 64, 0.72);
+    margin: 0;
+    color: rgba(20, 31, 64, 0.72);
 }
 
 .purchase-complete__card {
-  position: relative;
-  z-index: 1;
-  padding: 2.2rem 2.6rem;
-  border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(174, 197, 242, 0.35));
-  border: 1px solid rgba(64, 81, 115, 0.18);
-  display: grid;
-  gap: 1.4rem;
-  text-align: left;
-  box-shadow: 0 28px 52px rgba(64, 81, 115, 0.18);
+    position: relative;
+    z-index: 1;
+    padding: 2.2rem 2.6rem;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(174, 197, 242, 0.35));
+    border: 1px solid rgba(64, 81, 115, 0.18);
+    display: grid;
+    gap: 1.4rem;
+    text-align: left;
+    box-shadow: 0 28px 52px rgba(64, 81, 115, 0.18);
 }
 
 .purchase-complete__card strong {
-  font-size: 1.4rem;
-  color: var(--accent-primary);
+    font-size: 1.4rem;
+    color: var(--accent-primary);
 }
 
 .purchase-complete__card p {
-  margin: 0;
-  color: rgba(20, 31, 64, 0.74);
+    margin: 0;
+    color: rgba(20, 31, 64, 0.74);
 }
 
 .purchase-complete__card.is-used {
-  opacity: 0.9;
+    opacity: 0.9;
 }
 
 .purchase-complete__summary {
-  display: flex;
-  justify-content: space-between;
-  gap: 1.6rem;
-  align-items: flex-start;
+    display: flex;
+    justify-content: space-between;
+    gap: 1.6rem;
+    align-items: flex-start;
 }
 
 .purchase-complete__summary span:first-child {
-  display: block;
-  font-size: 0.85rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: rgba(20, 31, 64, 0.6);
+    display: block;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(20, 31, 64, 0.6);
 }
 
 .purchase-complete__summary strong {
-  display: block;
-  margin: 0.3rem 0;
+    display: block;
+    margin: 0.3rem 0;
 }
 
 .purchase-complete__cost {
-  font-weight: 700;
-  color: var(--accent-blue);
+    font-weight: 700;
+    color: var(--accent-blue);
 }
 
 .purchase-complete__meta-grid {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  margin: 0;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    margin: 0;
 }
 
 .purchase-complete__meta-grid div {
-  padding: 1rem 1.1rem;
-  border-radius: var(--radius-md);
-  background: rgba(244, 247, 255, 0.7);
-  border: 1px solid rgba(64, 81, 115, 0.12);
+    padding: 1rem 1.1rem;
+    border-radius: var(--radius-md);
+    background: rgba(244, 247, 255, 0.7);
+    border: 1px solid rgba(64, 81, 115, 0.12);
 }
 
 .purchase-complete__meta-grid dt {
-  margin: 0;
-  font-size: 0.8rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: rgba(20, 31, 64, 0.6);
+    margin: 0;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(20, 31, 64, 0.6);
 }
 
 .purchase-complete__meta-grid dd {
-  margin: 0.35rem 0 0;
-  font-weight: 600;
-  color: var(--accent-primary);
+    margin: 0.35rem 0 0;
+    font-weight: 600;
+    color: var(--accent-primary);
 }
 
 .purchase-complete__barcode {
-  border-radius: var(--radius-lg);
-  border: 1px dashed rgba(64, 81, 115, 0.35);
-  padding: 1.2rem 1.4rem 1.6rem;
-  background: rgba(255, 255, 255, 0.9);
-  display: grid;
-  gap: 0.8rem;
+    border-radius: var(--radius-lg);
+    border: 1px dashed rgba(64, 81, 115, 0.35);
+    padding: 1.2rem 1.4rem 1.6rem;
+    background: rgba(255, 255, 255, 0.9);
+    display: grid;
+    gap: 0.8rem;
 }
 
 .purchase-complete__barcode-bars {
-  height: 82px;
-  border-radius: var(--radius-md);
-  background: repeating-linear-gradient(
-    90deg,
-    rgba(12, 22, 49, 0.9) 0 6px,
-    transparent 6px 10px
-  );
-  mix-blend-mode: multiply;
+    height: 82px;
+    border-radius: var(--radius-md);
+    background: repeating-linear-gradient(
+            90deg,
+            rgba(12, 22, 49, 0.9) 0 6px,
+            transparent 6px 10px
+    );
+    mix-blend-mode: multiply;
 }
 
 .purchase-complete__barcode-number {
-  font-size: 1.4rem;
-  letter-spacing: 0.1em;
-  text-align: center;
-  color: #0f1c3f;
+    font-size: 1.4rem;
+    letter-spacing: 0.1em;
+    text-align: center;
+    color: #0f1c3f;
 }
 
 .purchase-complete__barcode-pin {
-  text-align: center;
-  font-size: 0.95rem;
-  color: rgba(20, 31, 64, 0.8);
+    text-align: center;
+    font-size: 0.95rem;
+    color: rgba(20, 31, 64, 0.8);
 }
 
 .purchase-complete__barcode p {
-  margin: 0;
-  text-align: center;
-  color: rgba(20, 31, 64, 0.7);
+    margin: 0;
+    text-align: center;
+    color: rgba(20, 31, 64, 0.7);
 }
 
 .purchase-complete__notice {
-  margin: 0;
-  padding: 0.9rem 1.1rem;
-  border-radius: var(--radius-md);
-  background: rgba(255, 214, 164, 0.24);
-  border: 1px solid rgba(255, 214, 164, 0.6);
-  color: rgba(118, 64, 7, 0.9);
+    margin: 0;
+    padding: 0.9rem 1.1rem;
+    border-radius: var(--radius-md);
+    background: rgba(255, 214, 164, 0.24);
+    border: 1px solid rgba(255, 214, 164, 0.6);
+    color: rgba(118, 64, 7, 0.9);
 }
 
 .purchase-complete__actions {
-  position: relative;
-  z-index: 1;
-  display: inline-flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.9rem;
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.9rem;
 }
 
 .purchase-complete__actions .cta-button {
-  min-width: 180px;
+    min-width: 180px;
 }
 
 @media (max-width: 640px) {
-  .purchase-complete__card {
-    padding: 1.6rem 1.4rem;
-  }
+    .purchase-complete__card {
+        padding: 1.6rem 1.4rem;
+    }
 
-  .purchase-complete__summary {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+    .purchase-complete__summary {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }

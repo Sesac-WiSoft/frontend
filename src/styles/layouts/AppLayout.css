@@ -62,10 +62,9 @@
     position: fixed;
     inset: -20vh -20vw;
     z-index: 0;
-    background:
-            radial-gradient(ellipse at 18% 22%, rgba(242, 228, 236, 0.7), transparent 55%),
-            radial-gradient(ellipse at 78% 18%, rgba(174, 197, 242, 0.62), transparent 60%),
-            radial-gradient(ellipse at 42% 82%, rgba(201, 219, 242, 0.55), transparent 65%);
+    background: radial-gradient(ellipse at 18% 22%, rgba(242, 228, 236, 0.7), transparent 55%),
+    radial-gradient(ellipse at 78% 18%, rgba(174, 197, 242, 0.62), transparent 60%),
+    radial-gradient(ellipse at 42% 82%, rgba(201, 219, 242, 0.55), transparent 65%);
     opacity: 0.8;
 }
 
@@ -333,31 +332,31 @@
         display: inline-flex;
     }
 
-      .shell__nav {
-          display: grid;
-          position: absolute;
-          top: calc(100% + 0.75rem);
-          left: 1.2rem;
-          right: 1.2rem;
-          padding: 1rem;
-          border-radius: var(--radius-md);
-          background: rgba(255, 255, 255, 0.95);
-          border: 1px solid rgba(64, 81, 115, 0.2);
-          box-shadow: var(--shadow-soft);
-          backdrop-filter: blur(18px);
-          gap: 0.6rem;
-          z-index: 20;
-          opacity: 0;
-          pointer-events: none;
-          transform: translateY(-10px) scale(0.98);
-          transition: opacity 0.25s ease, transform 0.25s ease, border 0.25s ease;
-      }
+    .shell__nav {
+        display: grid;
+        position: absolute;
+        top: calc(100% + 0.75rem);
+        left: 1.2rem;
+        right: 1.2rem;
+        padding: 1rem;
+        border-radius: var(--radius-md);
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(64, 81, 115, 0.2);
+        box-shadow: var(--shadow-soft);
+        backdrop-filter: blur(18px);
+        gap: 0.6rem;
+        z-index: 20;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-10px) scale(0.98);
+        transition: opacity 0.25s ease, transform 0.25s ease, border 0.25s ease;
+    }
 
-      .shell__nav.is-open {
-          opacity: 1;
-          pointer-events: auto;
-          transform: translateY(0) scale(1);
-      }
+    .shell__nav.is-open {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0) scale(1);
+    }
 
     .shell__nav .nav__link {
         width: 100%;
