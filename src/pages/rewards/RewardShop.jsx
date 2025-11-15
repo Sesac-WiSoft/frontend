@@ -10,10 +10,10 @@ import "../../styles/pages/RewardShop.css";
 const rewardCatalog = [
     {
         id: "convenience",
-        title: "편의점 · 즉시 리프레시",
+        title: "편의점",
         description:
             "퇴근길에 바로 쓰기 좋은 즉시 발급형 쿠폰으로 작은 루틴을 기분 좋게 마무리하세요.",
-        meta: "즉시 발급 · 유통기한 30일",
+        meta: "GS 25, CU, 7-eleven",
         items: [
             {
                 id: "gs25-night-pack",
@@ -50,7 +50,7 @@ const rewardCatalog = [
         title: "쇼핑 · 라이프 케어",
         description:
             "면접 준비에 필요한 스테이셔너리, 티켓, 라이프 케어 리워드를 모았습니다.",
-        meta: "프리미엄 큐레이션",
+        meta: "올리브영, 영풍문고",
         items: [
             {
                 id: "stationery-kit",
@@ -62,13 +62,13 @@ const rewardCatalog = [
                 perks: ["무료 배송", "선물 포장"],
             },
             {
-                id: "mindfulness-pass",
-                name: "마인드풀니스 클래스 패스",
+                id: "olive-young",
+                name: "올리브영 5만원권",
                 cost: 2400,
-                description: "도심 명상 스튜디오 1회 체험권 (주말 사용 가능).",
+                description: "올리브영 5만원권.",
                 badge: "위클리 베스트",
                 gradient: "linear-gradient(135deg, #e4f1ff, #d6e4ff)",
-                perks: ["1:1 안내 메시지", "최대 2주 예약"],
+                perks: ["일괄 바코드 제공", "분할 사용 가능"],
             },
             {
                 id: "premium-coffee-card",
@@ -83,37 +83,37 @@ const rewardCatalog = [
     },
     {
         id: "giftcard",
-        title: "콘텐츠 · 상품권",
+        title: "콘텐츠",
         description:
             "딥러닝을 도와줄 교육/콘텐츠 상품권부터 범용 디지털 기프트까지.",
-        meta: "전자 바우처",
+        meta: "인프런, 메가 스터디, 해커스",
         items: [
             {
                 id: "book-culture-10k",
-                name: "도서 문화 상품권 1만원",
+                name: "메가 스터디 배송비 무료 쿠폰",
                 cost: 1000,
-                description: "전자책·오프라인 서점 어디서든 사용 가능한 기본템.",
+                description: "메가 스터디의 교재 배송비 무료 쿠폰",
                 badge: "학습 필수",
                 gradient: "linear-gradient(135deg, #e7f3ff, #c3dfff)",
                 perks: ["즉시 PIN 발급", "사용 기한 1년"],
             },
             {
                 id: "app-store-5k",
-                name: "App Store · 구글플레이 5천원",
+                name: "인프런 강의 1년 수강권",
                 cost: 700,
-                description: "필요한 생산성 앱, 사전 준비해 두세요.",
+                description: "인프런에서 필요한 강의를 1년 간 무제한으로 들어요.",
                 badge: "디지털",
                 gradient: "linear-gradient(135deg, #eef8ff, #ddf0ff)",
                 perks: ["즉시 코드 확인", "부분 사용 가능"],
             },
             {
                 id: "netflix-1month",
-                name: "OTT 1개월 패스",
+                name: "해커스 1개월 패스",
                 cost: 2300,
-                description: "컨디션 조절을 위한 오프 타임, 넷플릭스/티빙 중 선택.",
+                description: "해커스에서 필요한 강의를 1개월 간 무제한으로 들어요.",
                 badge: "휴식 모드",
                 gradient: "linear-gradient(135deg, #ffe7ef, #ffd7d7)",
-                perks: ["교환 후 30일 이내 등록", "계정 공유 가능"],
+                perks: ["교환 후 30일 이내 등록"],
             },
         ],
     },
@@ -199,10 +199,9 @@ export default function RewardShop() {
             <header className="reward-shop__header">
                 <div>
                     <span className="tag">Reward Shop</span>
-                    <h1>포인트로 일상을 더 촘촘하게</h1>
+                    <h1>수고한 당신께 보상을</h1>
                     <p>
-                        사진 없이도 정갈한 카드 UI로 각 카테고리를 한눈에 살펴보고, 루틴
-                        보상에 어울리는 리워드를 더 스마트하게 선택하세요.
+                        그동안의 점수를 보상으로 교환해보세요.<br></br> 다양한 상품들이 당신을 기다리고 있어요!
                     </p>
                 </div>
                 <div className="reward-shop__balance">
